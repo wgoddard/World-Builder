@@ -38,7 +38,20 @@ namespace WorldBuilder
             m_node.Tag = this;
         }
 
+        public void Select()
+        {
+            m_node.TreeView.SelectedNode = m_node;
+            //MessageBox.Show(m_node.IsSelected.ToString());
+        }
+
+        public void Translate(int x, int y)
+        {
+            m_position.X += x;
+            m_position.Y += y;
+        }
+
         public abstract void Draw();
+        public abstract void DrawBox();
 
         public abstract bool Collide(Rectangle rect);
 

@@ -54,6 +54,9 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.contextMenuWorld = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openTextures = new System.Windows.Forms.OpenFileDialog();
+            this.lLayer = new System.Windows.Forms.Label();
+            this.lMouse = new System.Windows.Forms.Label();
+            this.lMouseScreen = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -95,14 +98,14 @@
             // newWorldToolStripMenuItem
             // 
             this.newWorldToolStripMenuItem.Name = "newWorldToolStripMenuItem";
-            this.newWorldToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.newWorldToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.newWorldToolStripMenuItem.Text = "New World";
             this.newWorldToolStripMenuItem.Click += new System.EventHandler(this.newWorldToolStripMenuItem_Click);
             // 
             // addTexturesToolStripMenuItem
             // 
             this.addTexturesToolStripMenuItem.Name = "addTexturesToolStripMenuItem";
-            this.addTexturesToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.addTexturesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addTexturesToolStripMenuItem.Text = "Add Textures";
             this.addTexturesToolStripMenuItem.Click += new System.EventHandler(this.addTexturesToolStripMenuItem_Click);
             // 
@@ -231,6 +234,9 @@
             // 
             // splitContainer4.Panel2
             // 
+            this.splitContainer4.Panel2.Controls.Add(this.lMouseScreen);
+            this.splitContainer4.Panel2.Controls.Add(this.lMouse);
+            this.splitContainer4.Panel2.Controls.Add(this.lLayer);
             this.splitContainer4.Panel2.Controls.Add(this.button1);
             this.splitContainer4.Size = new System.Drawing.Size(512, 681);
             this.splitContainer4.SplitterDistance = 487;
@@ -338,6 +344,30 @@
             // 
             this.openTextures.Multiselect = true;
             // 
+            // lLayer
+            // 
+            this.lLayer.AutoSize = true;
+            this.lLayer.Location = new System.Drawing.Point(23, 168);
+            this.lLayer.Name = "lLayer";
+            this.lLayer.Size = new System.Drawing.Size(0, 13);
+            this.lLayer.TabIndex = 1;
+            // 
+            // lMouse
+            // 
+            this.lMouse.AutoSize = true;
+            this.lMouse.Location = new System.Drawing.Point(138, 168);
+            this.lMouse.Name = "lMouse";
+            this.lMouse.Size = new System.Drawing.Size(0, 13);
+            this.lMouse.TabIndex = 2;
+            // 
+            // lMouseScreen
+            // 
+            this.lMouseScreen.AutoSize = true;
+            this.lMouseScreen.Location = new System.Drawing.Point(342, 165);
+            this.lMouseScreen.Name = "lMouseScreen";
+            this.lMouseScreen.Size = new System.Drawing.Size(0, 13);
+            this.lMouseScreen.TabIndex = 3;
+            // 
             // WorldBuilder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -367,6 +397,7 @@
             this.splitContainer2.ResumeLayout(false);
             this.splitContainer4.Panel1.ResumeLayout(false);
             this.splitContainer4.Panel2.ResumeLayout(false);
+            this.splitContainer4.Panel2.PerformLayout();
             this.splitContainer4.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
@@ -401,6 +432,9 @@
         private System.Windows.Forms.ImageList textureList;
         private System.Windows.Forms.OpenFileDialog openTextures;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label lMouse;
+        private System.Windows.Forms.Label lLayer;
+        private System.Windows.Forms.Label lMouseScreen;
     }
 }
 

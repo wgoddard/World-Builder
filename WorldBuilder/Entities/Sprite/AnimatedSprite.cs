@@ -9,6 +9,10 @@ namespace WorldBuilder
     {
 
         public override void Draw() { }
+        public override void DrawBox()
+        {
+            throw new NotImplementedException();
+        }
         public override bool Collide(System.Drawing.Point point)
         {
             throw new NotImplementedException();

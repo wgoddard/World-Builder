@@ -33,6 +33,8 @@ namespace WorldBuilder
 
         public void Select(Level level, Layer layer)
         {
+            if (level == null) return;
+
             m_selectedLevel = level;
             if (layer != null)
                 m_selectedLevel.SelectLayer(layer);

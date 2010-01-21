@@ -18,11 +18,13 @@ namespace WorldBuilder
     {
         private World world = null;
         List<Entity> selectedEntities = new List<Entity>();
+        Point screenTranslation = new Point();
 
         public WorldBuilder()
         {
             InitializeComponent();
 
+            glWorld.InitializeContexts();
             Il.ilInit();
             Ilu.iluInit();
             Ilut.ilutInit();
@@ -37,7 +39,6 @@ namespace WorldBuilder
 
         private void glWorld_Load(object sender, EventArgs e)
         {
-            glWorld.InitializeContexts();
             Gl.glClearColor(0.0f, 0.0f, 0.0f,0.0f);
             Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
             Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_ONE_MINUS_SRC_ALPHA);
@@ -49,7 +50,7 @@ namespace WorldBuilder
         private void newWorldToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (world == null)
-                world = new World(WorldTree, "Default");
+                world = new World(WorldTree, "World");
             propertyGrid.SelectedObject = world;
         }
 
@@ -117,6 +118,10 @@ namespace WorldBuilder
             //MessageBox.Show(sender.ToString());
 
             Texture texture = new Texture(Resources.Manager.GetImage(((ListView)sender).SelectedItems[0].Text));
+            Point pos = new Point();
+            pos.X -= screenTranslation.X;
+            pos.Y -= screenTranslation.Y;
+            texture.Position = pos;
             layer.AddEntity(texture);
         }
 
@@ -139,6 +144,7 @@ namespace WorldBuilder
             Gl.glMatrixMode(Gl.GL_PROJECTION);
             Gl.glLoadIdentity();
             Gl.glOrtho(0, width, 0, height, 0, 1.0);
+            Gl.glTranslated((double)(screenTranslation.X), (double)(screenTranslation.Y), 0);
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
             Gl.glViewport(0, 0, width, height);
 
@@ -151,6 +157,18 @@ namespace WorldBuilder
             catch(Exception)
             {}
 
+            foreach (Entity entity in selectedEntities)
+            {
+                entity.DrawBox();
+            }
+
+
+            //Gl.glMatrixMode(Gl.GL_PROJECTION);
+            //Gl.glLoadIdentity();
+            //Gl.glOrtho(0, width, 0, height, 0, 1.0);
+            //Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            Point p1 = AdjustPoint(mouseStart);
+            Point p2 = AdjustPoint(mouseCurrent);
 
             switch (mousemode)
             {
@@ -158,10 +176,10 @@ namespace WorldBuilder
                     Gl.glColor4f(0.6f, 0.5f, 0.5f, 0.3f);
                     Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
                     Gl.glBegin(Gl.GL_QUADS);
-                    Gl.glVertex2i(mouseStart.X, mouseStart.Y);
-                    Gl.glVertex2i(mouseCurrent.X, mouseStart.Y);
-                    Gl.glVertex2i(mouseCurrent.X, mouseCurrent.Y);
-                    Gl.glVertex2i(mouseStart.X, mouseCurrent.Y);
+                    Gl.glVertex2i(p1.X, p1.Y);
+                    Gl.glVertex2i(p2.X, p1.Y);
+                    Gl.glVertex2i(p2.X, p2.Y);
+                    Gl.glVertex2i(p1.X, p2.Y);
                     Gl.glEnd();
                     break;
                 default:
@@ -181,58 +199,66 @@ namespace WorldBuilder
         enum MouseMode { None, TranslateEntity, RotateEntity, ScaleEntity, TranslateScreen, SelectEntity };
         MouseMode mousemode = MouseMode.None;
 
+        Point AdjustPoint(Point point)
+        {
+            Point p = new Point(point.X, point.Y);
+            p.X -= screenTranslation.X;
+            p.Y -= screenTranslation.Y;
+            return p;
+        }
+
+        Rectangle AdjustRectangle(Rectangle rect)
+        {
+            Rectangle r = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
+            r.X -= screenTranslation.X;
+            r.Y -= screenTranslation.Y;
+            return r;
+        }
+
         private void glWorld_MouseDown(object sender, MouseEventArgs e)
         {
             mouseStart = e.Location;
             mouseStart.Y = glWorld.Height - mouseStart.Y;
+            //mouseStart.X -= screenTranslation.X;
             Layer currentLayer = world.GetLayer();
-            if (selectedEntities.Count > 0)
+            Entity selectedEntity = null;
+            if (currentLayer != null)
             {
-                // if mouse clicks on entity
-                if (currentLayer != null && currentLayer.SelectEntity(mouseStart) != null)
-                {
-
-                    switch (e.Button)
-                    {
-                        case MouseButtons.Left:
-                            mousemode = MouseMode.TranslateEntity;
-                            return;
-                        default:
-                            mousemode = MouseMode.None;
-                            break;
-                    }
-                    //switch mousebutton
-                        //mousemode = TranslateEntity(s)/Rotate/Scale
-                }
-                else
-                { 
-                    propertyGrid.SelectedObject = null;
-                    selectedEntities.Clear();
-                    //unselected entities
-                }
+                selectedEntity = currentLayer.SelectEntity(AdjustPoint(mouseStart));
+               // if (selectedEntity != null)
+                propertyGrid.SelectedObject = selectedEntity;
+                if (selectedEntity != null)
+                    selectedEntity.Select();
             }
+
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    //Test Point for Entity
-                    //Layer currentLayer = world.GetLayer();
-                    if (currentLayer != null && currentLayer.SelectEntity(mouseStart) != null)
+                    if (selectedEntity != null)
                     {
-                        propertyGrid.SelectedObject = world.GetLayer().SelectEntity(mouseStart);
+                        if (selectedEntities.Contains(selectedEntity) == false)
+                        {
+                            selectedEntities.Clear();
+                            selectedEntities.Add(selectedEntity);
+                        }
                         mousemode = MouseMode.TranslateEntity;
-                        selectedEntities.Add(currentLayer.SelectEntity(mouseStart));
+                        return;
                     }
-                      // if entity
-                      // mousemode = TranslateEntity
-                    //else
+                    selectedEntities.Clear();
                     mousemode = MouseMode.SelectEntity;
                     break;
                 case MouseButtons.Right:
-                    //TranslateScreen
+                    if (selectedEntities.Count > 0)
+                    { }
+                    else
+                    {
+                        mousemode = MouseMode.TranslateScreen;
+                    }
                     break;
                 default:
                     break;
             }
+            
         }
 
         private void glWorld_MouseMove(object sender, MouseEventArgs e)
@@ -240,12 +266,58 @@ namespace WorldBuilder
 
             mouseCurrent = e.Location;
             mouseCurrent.Y = glWorld.Height - mouseCurrent.Y;
+
+            lMouse.Text = "World Position (" + AdjustPoint(mouseCurrent).X.ToString() + ", " + AdjustPoint(mouseCurrent).Y.ToString() + ")";
+            lMouseScreen.Text = "Mouse Position (" + mouseCurrent.X.ToString() + ", " + mouseCurrent.Y.ToString() + ")";
+            //mouseCurrent.X -= screenTranslation.X;
+            int tx, ty = 0;
+            switch (mousemode)
+            {
+                case MouseMode.TranslateEntity:
+                    
+                    tx = mouseCurrent.X - mouseStart.X;
+                    ty = mouseCurrent.Y - mouseStart.Y;
+                    mouseStart = mouseCurrent;
+                    foreach (Entity entity in selectedEntities)
+                    {
+                        entity.Translate(tx, ty);
+                    }
+                    break;
+                case MouseMode.TranslateScreen:
+                    tx = mouseCurrent.X - mouseStart.X;
+                    ty = mouseCurrent.Y - mouseStart.Y;
+                    mouseStart = mouseCurrent;
+                    screenTranslation.X += tx;
+                    screenTranslation.Y += ty;
+                    break;
+                default:
+                    break;
+            }
+
+
             glWorld.Draw();
+            //propertyGrid.Update();
 
         }
 
         private void glWorld_MouseUp(object sender, MouseEventArgs e)
         {
+            if (mousemode == MouseMode.SelectEntity)
+            {
+                Layer selectedLayer = world.GetLayer();
+                if (selectedLayer != null)
+                {
+                    Rectangle rect = new Rectangle
+                        (mouseStart.X > mouseCurrent.X ? mouseCurrent.X : mouseStart.X,
+                        mouseStart.Y > mouseCurrent.Y ? mouseCurrent.Y : mouseStart.Y,
+                        Math.Abs(mouseCurrent.X - mouseStart.X),
+                        Math.Abs(mouseCurrent.Y - mouseStart.Y));
+                    selectedEntities = selectedLayer.SelectEntities(AdjustRectangle(rect));
+                    if (selectedEntities.Count > 0)
+                        propertyGrid.SelectedObject = selectedEntities[selectedEntities.Count - 1];
+                   // MessageBox.Show("Selected " + selectedEntities.Count.ToString() + " entities" + selectedEntities.ToString());
+                }
+            }
             mousemode = MouseMode.None;
         }
 

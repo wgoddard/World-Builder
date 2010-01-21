@@ -20,7 +20,7 @@ namespace WorldBuilder
         {
             m_layers = new List<Layer>();
             m_node = node;
-            node.Text = "Wagga";
+            node.Text = "New Level";
             node.Tag = this;
             m_name = node.Text;
 
@@ -63,7 +63,10 @@ namespace WorldBuilder
 
         public void SelectLayer(Layer layer)
         {
-            m_selectedLayer = layer;
+            if (layer != null)
+                m_selectedLayer = layer;
+            else
+                m_selectedLayer = m_layers[m_layers.Count - 1];
         }
 
         public string Name

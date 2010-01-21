@@ -36,6 +36,25 @@ namespace WorldBuilder
             Gl.glEnd();
         }
 
+        public override void DrawBox()
+        {
+            Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
+            Gl.glColor3f(1.0f, 0f, 0f);
+            Gl.glBegin(Gl.GL_LINE_STRIP);
+
+            Gl.glVertex2i(base.Position.X, base.Position.Y);
+
+            Gl.glVertex2i(base.Position.X + m_image.Width, base.Position.Y);
+
+            Gl.glVertex2i(base.Position.X + m_image.Width, base.Position.Y + m_image.Height);
+
+            Gl.glVertex2i(base.Position.X, base.Position.Y + m_image.Height);
+
+            Gl.glVertex2i(base.Position.X, base.Position.Y);
+
+            Gl.glEnd();
+        }
+
         public override bool Collide(System.Drawing.Point point)
         {
             System.Drawing.Rectangle rect = new System.Drawing.Rectangle(base.Position.X, base.Position.Y, m_image.Width, m_image.Height);
@@ -50,6 +69,16 @@ namespace WorldBuilder
         }
         public override bool Collide(System.Drawing.Rectangle rect)
         {
+            System.Drawing.Rectangle thisRect = new System.Drawing.Rectangle(base.Position.X, base.Position.Y, m_image.Width, m_image.Height);
+
+            //if (rect.Left > thisRect.Right) return false;
+            //if (rect.Right < thisRect.Left) return false;
+            //if (rect.Top > rect.B
+
+            if (thisRect.IntersectsWith(rect))
+                return true;
+
+
             return false;
         }
 

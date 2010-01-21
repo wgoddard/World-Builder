@@ -25,13 +25,16 @@ namespace WorldBuilder
             entity.SetNode(node);
             m_node.Nodes.Add(node);
             m_entities.Add(entity);
+            m_node.TreeView.SelectedNode = node;
 
         }
 
         public Entity SelectEntity(System.Drawing.Point point)
         {
-            foreach (Entity entity in m_entities)
+            //foreach (Entity entity in m_entities)
+            for (int i = m_entities.Count - 1; i >= 0; --i)
             {
+                Entity entity = m_entities[i];
                 if (entity.Collide(point)) return entity;
             }
             return null;
@@ -40,6 +43,11 @@ namespace WorldBuilder
         public List<Entity> SelectEntities(System.Drawing.Rectangle rect)
         {
             List<Entity> entities = new List<Entity>();
+            foreach (Entity entity in m_entities)
+            {
+                if (entity.Collide(rect))
+                    entities.Add(entity);
+            }
             return entities;
         }
 

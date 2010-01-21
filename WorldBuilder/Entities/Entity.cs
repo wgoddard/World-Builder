@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace WorldBuilder
 {
-    class Entity
+    abstract class Entity
     {
         private static int id = 0;
 
@@ -17,6 +18,7 @@ namespace WorldBuilder
         float m_scaley;
         bool m_flipx;
         bool m_flipy;
+        TreeNode m_node;
 
         public Entity()
         {
@@ -30,6 +32,17 @@ namespace WorldBuilder
             m_flipy = false;
         }
 
+        public void SetNode(TreeNode node)
+        {
+            m_node = node;
+            m_node.Tag = this;
+        }
+
+        public abstract void Draw();
+
+        public abstract bool Collide(Rectangle rect);
+
+        public abstract bool Collide(Point point);
 
         #region Public Accessors
 
@@ -72,7 +85,7 @@ namespace WorldBuilder
         public string Name
         {
             get { return m_name; }
-            set { m_name = value; }
+            set { m_name = value; m_node.Text = value; }
         }
 
         #endregion

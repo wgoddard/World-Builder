@@ -33,6 +33,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newWorldToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -44,11 +45,15 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.glWorld = new Tao.Platform.Windows.SimpleOpenGlControl();
+            this.button1 = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.listTextures = new System.Windows.Forms.ListView();
+            this.textureList = new System.Windows.Forms.ImageList(this.components);
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.contextMenuWorld = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.openTextures = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -62,8 +67,10 @@
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.splitContainer4.Panel1.SuspendLayout();
+            this.splitContainer4.Panel2.SuspendLayout();
             this.splitContainer4.SuspendLayout();
             this.tabControl1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -79,7 +86,8 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newWorldToolStripMenuItem});
+            this.newWorldToolStripMenuItem,
+            this.addTexturesToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -87,9 +95,16 @@
             // newWorldToolStripMenuItem
             // 
             this.newWorldToolStripMenuItem.Name = "newWorldToolStripMenuItem";
-            this.newWorldToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.newWorldToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.newWorldToolStripMenuItem.Text = "New World";
             this.newWorldToolStripMenuItem.Click += new System.EventHandler(this.newWorldToolStripMenuItem_Click);
+            // 
+            // addTexturesToolStripMenuItem
+            // 
+            this.addTexturesToolStripMenuItem.Name = "addTexturesToolStripMenuItem";
+            this.addTexturesToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.addTexturesToolStripMenuItem.Text = "Add Textures";
+            this.addTexturesToolStripMenuItem.Click += new System.EventHandler(this.addTexturesToolStripMenuItem_Click);
             // 
             // toolStrip1
             // 
@@ -154,7 +169,6 @@
             this.WorldTree.Name = "WorldTree";
             this.WorldTree.Size = new System.Drawing.Size(212, 423);
             this.WorldTree.TabIndex = 1;
-            this.WorldTree.MouseClick += new System.Windows.Forms.MouseEventHandler(this.WorldTree_MouseClick);
             this.WorldTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.WorldTree_AfterSelect);
             this.WorldTree.Click += new System.EventHandler(this.WorldTree_Click);
             // 
@@ -188,6 +202,7 @@
             // splitContainer2
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.splitContainer2.Location = new System.Drawing.Point(0, 0);
             this.splitContainer2.Name = "splitContainer2";
             // 
@@ -205,6 +220,7 @@
             // splitContainer4
             // 
             this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer4.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.splitContainer4.Location = new System.Drawing.Point(0, 0);
             this.splitContainer4.Name = "splitContainer4";
             this.splitContainer4.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -212,6 +228,10 @@
             // splitContainer4.Panel1
             // 
             this.splitContainer4.Panel1.Controls.Add(this.glWorld);
+            // 
+            // splitContainer4.Panel2
+            // 
+            this.splitContainer4.Panel2.Controls.Add(this.button1);
             this.splitContainer4.Size = new System.Drawing.Size(512, 681);
             this.splitContainer4.SplitterDistance = 487;
             this.splitContainer4.TabIndex = 0;
@@ -233,6 +253,20 @@
             this.glWorld.StencilBits = ((byte)(0));
             this.glWorld.TabIndex = 0;
             this.glWorld.Load += new System.EventHandler(this.glWorld_Load);
+            this.glWorld.Paint += new System.Windows.Forms.PaintEventHandler(this.glWorld_Paint);
+            this.glWorld.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glWorld_MouseMove);
+            this.glWorld.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glWorld_MouseDown);
+            this.glWorld.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glWorld_MouseUp);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(109, 38);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(76, 27);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // tabControl1
             // 
@@ -248,6 +282,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.listTextures);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -255,6 +290,25 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Textures";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // listTextures
+            // 
+            this.listTextures.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listTextures.Location = new System.Drawing.Point(3, 3);
+            this.listTextures.MultiSelect = false;
+            this.listTextures.Name = "listTextures";
+            this.listTextures.Size = new System.Drawing.Size(262, 649);
+            this.listTextures.SmallImageList = this.textureList;
+            this.listTextures.TabIndex = 0;
+            this.listTextures.UseCompatibleStateImageBehavior = false;
+            this.listTextures.View = System.Windows.Forms.View.SmallIcon;
+            this.listTextures.DoubleClick += new System.EventHandler(this.listTextures_DoubleClick);
+            // 
+            // textureList
+            // 
+            this.textureList.ColorDepth = System.Windows.Forms.ColorDepth.Depth16Bit;
+            this.textureList.ImageSize = new System.Drawing.Size(32, 32);
+            this.textureList.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // tabPage3
             // 
@@ -279,6 +333,10 @@
             // 
             this.contextMenuWorld.Name = "contextMenuWorld";
             this.contextMenuWorld.Size = new System.Drawing.Size(61, 4);
+            // 
+            // openTextures
+            // 
+            this.openTextures.Multiselect = true;
             // 
             // WorldBuilder
             // 
@@ -308,8 +366,10 @@
             this.splitContainer2.Panel2.ResumeLayout(false);
             this.splitContainer2.ResumeLayout(false);
             this.splitContainer4.Panel1.ResumeLayout(false);
+            this.splitContainer4.Panel2.ResumeLayout(false);
             this.splitContainer4.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -336,6 +396,11 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.ToolStripMenuItem newWorldToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuWorld;
+        private System.Windows.Forms.ToolStripMenuItem addTexturesToolStripMenuItem;
+        private System.Windows.Forms.ListView listTextures;
+        private System.Windows.Forms.ImageList textureList;
+        private System.Windows.Forms.OpenFileDialog openTextures;
+        private System.Windows.Forms.Button button1;
     }
 }
 

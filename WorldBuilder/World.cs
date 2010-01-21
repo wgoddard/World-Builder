@@ -38,6 +38,17 @@ namespace WorldBuilder
                 m_selectedLevel.SelectLayer(layer);
         }
 
+        public Layer GetLayer()
+        {
+            if (m_selectedLevel == null) return null;
+            return m_selectedLevel.GetCurrentLayer();
+        }
+
+        public Level GetLevel()
+        {
+            return m_selectedLevel;
+        }
+
         void World_Click(object sender, EventArgs e)
         {
             AddLevel();

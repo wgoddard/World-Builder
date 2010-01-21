@@ -33,6 +33,14 @@ namespace WorldBuilder
             m_node.ContextMenuStrip = m_cms;
         }
 
+        public void Draw()
+        {
+            foreach (Layer layer in m_layers)
+            {
+                layer.Draw();
+            }
+        }
+
         void AddLayer_Click(object sender, EventArgs e)
         {
             AddLayer();
@@ -46,6 +54,11 @@ namespace WorldBuilder
             m_selectedLayer = new Layer(node);
             m_layers.Add(m_selectedLayer);
             m_node.Expand();
+        }
+
+        public Layer GetCurrentLayer()
+        {
+            return m_selectedLayer;
         }
 
         public void SelectLayer(Layer layer)

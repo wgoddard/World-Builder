@@ -18,7 +18,7 @@ namespace WorldBuilder
         float m_scaley;
         bool m_flipx;
         bool m_flipy;
-        TreeNode m_node;
+        TreeNode m_node = null;
 
         public Entity()
         {
@@ -50,6 +50,8 @@ namespace WorldBuilder
             m_position.Y += y;
         }
 
+
+        public abstract Entity Clone();
         public abstract void Draw();
         public abstract void DrawBox();
 
@@ -98,7 +100,7 @@ namespace WorldBuilder
         public string Name
         {
             get { return m_name; }
-            set { m_name = value; m_node.Text = value; }
+            set { m_name = value; if (m_node != null) m_node.Text = value; }
         }
 
         #endregion

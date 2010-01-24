@@ -10,6 +10,7 @@ namespace WorldBuilder
     {
         List<Entity> m_entities;
         TreeNode m_node;
+        string m_name;
 
         public Layer(TreeNode node)
         {
@@ -17,6 +18,7 @@ namespace WorldBuilder
             m_node = node;
             m_node.Tag = this;
             m_node.TreeView.SelectedNode = m_node;
+            m_name = m_node.Text;
         }
 
         public void AddEntity(Entity entity)
@@ -25,8 +27,23 @@ namespace WorldBuilder
             entity.SetNode(node);
             m_node.Nodes.Add(node);
             m_entities.Add(entity);
-            m_node.TreeView.SelectedNode = node;
+            //m_node.TreeView.SelectedNode = node;
 
+        }
+
+        public void SortNodes()
+        {
+            m_entities.Clear();
+            foreach (TreeNode child in m_node.Nodes)
+            {
+                m_entities.Add((Entity)child.Tag);
+            }
+        }
+
+        public void DeleteNode(TreeNode node)
+        {
+            m_entities.Remove((Entity)node.Tag);
+            m_node.Nodes.Remove(node);
         }
 
         public Entity SelectEntity(System.Drawing.Point point)
@@ -58,6 +75,12 @@ namespace WorldBuilder
             {
                 entity.Draw();
             }
+        }
+
+        public string Name
+        {
+            get { return m_name; }
+            set { m_name = value; m_node.Text = value; }
         }
     }
 }

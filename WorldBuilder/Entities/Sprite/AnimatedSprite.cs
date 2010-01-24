@@ -21,5 +21,9 @@ namespace WorldBuilder
         {
             throw new NotImplementedException();
         }
+        public override Entity Clone()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

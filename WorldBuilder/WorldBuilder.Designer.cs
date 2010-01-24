@@ -45,6 +45,9 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.glWorld = new Tao.Platform.Windows.SimpleOpenGlControl();
+            this.lMouseScreen = new System.Windows.Forms.Label();
+            this.lMouse = new System.Windows.Forms.Label();
+            this.lLayer = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -54,9 +57,6 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.contextMenuWorld = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openTextures = new System.Windows.Forms.OpenFileDialog();
-            this.lLayer = new System.Windows.Forms.Label();
-            this.lMouse = new System.Windows.Forms.Label();
-            this.lMouseScreen = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -98,14 +98,14 @@
             // newWorldToolStripMenuItem
             // 
             this.newWorldToolStripMenuItem.Name = "newWorldToolStripMenuItem";
-            this.newWorldToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newWorldToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.newWorldToolStripMenuItem.Text = "New World";
             this.newWorldToolStripMenuItem.Click += new System.EventHandler(this.newWorldToolStripMenuItem_Click);
             // 
             // addTexturesToolStripMenuItem
             // 
             this.addTexturesToolStripMenuItem.Name = "addTexturesToolStripMenuItem";
-            this.addTexturesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addTexturesToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.addTexturesToolStripMenuItem.Text = "Add Textures";
             this.addTexturesToolStripMenuItem.Click += new System.EventHandler(this.addTexturesToolStripMenuItem_Click);
             // 
@@ -167,12 +167,16 @@
             // 
             // WorldTree
             // 
+            this.WorldTree.AllowDrop = true;
             this.WorldTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.WorldTree.Location = new System.Drawing.Point(0, 25);
             this.WorldTree.Name = "WorldTree";
             this.WorldTree.Size = new System.Drawing.Size(212, 423);
             this.WorldTree.TabIndex = 1;
+            this.WorldTree.DragDrop += new System.Windows.Forms.DragEventHandler(this.WorldTree_DragDrop);
             this.WorldTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.WorldTree_AfterSelect);
+            this.WorldTree.DragEnter += new System.Windows.Forms.DragEventHandler(this.WorldTree_DragEnter);
+            this.WorldTree.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.WorldTree_ItemDrag);
             this.WorldTree.Click += new System.EventHandler(this.WorldTree_Click);
             // 
             // toolStrip2
@@ -264,6 +268,30 @@
             this.glWorld.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glWorld_MouseDown);
             this.glWorld.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glWorld_MouseUp);
             // 
+            // lMouseScreen
+            // 
+            this.lMouseScreen.AutoSize = true;
+            this.lMouseScreen.Location = new System.Drawing.Point(342, 165);
+            this.lMouseScreen.Name = "lMouseScreen";
+            this.lMouseScreen.Size = new System.Drawing.Size(0, 13);
+            this.lMouseScreen.TabIndex = 3;
+            // 
+            // lMouse
+            // 
+            this.lMouse.AutoSize = true;
+            this.lMouse.Location = new System.Drawing.Point(138, 168);
+            this.lMouse.Name = "lMouse";
+            this.lMouse.Size = new System.Drawing.Size(0, 13);
+            this.lMouse.TabIndex = 2;
+            // 
+            // lLayer
+            // 
+            this.lLayer.AutoSize = true;
+            this.lLayer.Location = new System.Drawing.Point(23, 168);
+            this.lLayer.Name = "lLayer";
+            this.lLayer.Size = new System.Drawing.Size(0, 13);
+            this.lLayer.TabIndex = 1;
+            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(109, 38);
@@ -344,30 +372,6 @@
             // 
             this.openTextures.Multiselect = true;
             // 
-            // lLayer
-            // 
-            this.lLayer.AutoSize = true;
-            this.lLayer.Location = new System.Drawing.Point(23, 168);
-            this.lLayer.Name = "lLayer";
-            this.lLayer.Size = new System.Drawing.Size(0, 13);
-            this.lLayer.TabIndex = 1;
-            // 
-            // lMouse
-            // 
-            this.lMouse.AutoSize = true;
-            this.lMouse.Location = new System.Drawing.Point(138, 168);
-            this.lMouse.Name = "lMouse";
-            this.lMouse.Size = new System.Drawing.Size(0, 13);
-            this.lMouse.TabIndex = 2;
-            // 
-            // lMouseScreen
-            // 
-            this.lMouseScreen.AutoSize = true;
-            this.lMouseScreen.Location = new System.Drawing.Point(342, 165);
-            this.lMouseScreen.Name = "lMouseScreen";
-            this.lMouseScreen.Size = new System.Drawing.Size(0, 13);
-            this.lMouseScreen.TabIndex = 3;
-            // 
             // WorldBuilder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -378,7 +382,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "WorldBuilder";
-            this.Text = "Form1";
+            this.Text = "World Builder";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
@@ -407,6 +411,7 @@
         }
 
         #endregion
+   
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStrip toolStrip1;

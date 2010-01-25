@@ -20,6 +20,8 @@ namespace WorldBuilder
         List<Entity> selectedEntities = new List<Entity>();
         Point screenTranslation = new Point();
         double screenZoom = 1.0f;
+        bool gridAlign = false;
+        bool showGrid = true;
 
         public WorldBuilder()
         {
@@ -47,7 +49,7 @@ namespace WorldBuilder
             //    //screenTranslation.Y += -(mouseCurrent.Y - glWorld.Height / 2);
             //}
             screenZoom += 0.001 * e.Delta;
-            if (screenZoom < 0)
+            if (screenZoom < 0.1)
                 screenZoom = 0.01;
 
 
@@ -115,8 +117,8 @@ namespace WorldBuilder
             {
                 layer = (Layer)node.Parent.Tag;
                 level = (Level)node.Parent.Parent.Tag;
-                //selectedEntities.Clear();
-                //selectedEntities.Add((Entity)node.Tag);
+                selectedEntities.Clear();
+                selectedEntities.Add((Entity)node.Tag);
             }
 
            // MessageBox.Show(typeof(Entity).ToString());
@@ -194,13 +196,15 @@ namespace WorldBuilder
             {
                 world.GetLevel().Draw();
                 Layer l = world.GetLayer();
-                if (l.GridX > 0 && l.GridY > 0)
+                if (showGrid && l.GridX > 0 && l.GridY > 0)
                 {
                     Gl.glColor3f(1, 1, 1);
+                    Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
                     Gl.glBegin(Gl.GL_LINES);
-                    for (int x = screenTranslation.X; x < glWorld.Width - screenTranslation.X; x += l.GridX)
+             
+                    for (int x = 0; x < (glWorld.Width - screenTranslation.X) / screenZoom; x += l.GridX)
                     {
-                        for (int y = screenTranslation.Y; y < glWorld.Height - screenTranslation.Y; y += l.GridY)
+                        for (int y = 0; y < (glWorld.Height - screenTranslation.Y) / screenZoom; y += l.GridY)
                         {
                             Gl.glVertex2i(x,y);
                             Gl.glVertex2i(x,y + glWorld.Height);
@@ -245,16 +249,34 @@ namespace WorldBuilder
                     Point mouse = AdjustPoint(mouseCurrent);
                     mouseStamp.X = mouse.X;
                     mouseStamp.Y = mouse.Y;
+                    if (gridAlign == true && world.GetLayer().GridX > 0 && world.GetLayer().GridY > 0)
+                    {
+                        mouseStamp.X = mouseStamp.X - mouseStamp.X % world.GetLayer().GridX + mouseStamp.Width/2;
+                        //mouseStamp.X -= (mouse.X - mouseStamp.Width / 2) % world.GetLayer().GridX;
+                        mouseStamp.Y = mouseStamp.Y - mouseStamp.Y % world.GetLayer().GridY + mouseStamp.Height / 2;
+                       // mouseStamp.Y -= (mouse.Y - mouseStamp.Height / 2) % world.GetLayer().GridY;
+                    }
                     mouseStamp.Draw();
                     break;
                 case MouseMode.TileEntity:
                     Gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
                     Point mouseNow = AdjustPoint(mouseCurrent);
                     Point mouseS = AdjustPoint(mouseStart);
-                    mouseS.X -= mouseStamp.Width/2;
-                    mouseS.Y += mouseStamp.Height/2;
-                    mouseNow.X += mouseStamp.Width/2;
-                    mouseNow.Y -= mouseStamp.Height/2;
+                    if (gridAlign == true && world.GetLayer().GridX > 0 && world.GetLayer().GridY > 0)
+                    {
+                        //mouseNow.X = mouseNow.X - mouseNow.X % world.GetLayer().GridX + mouseStamp.Width / 2;
+                        //mouseNow.Y = mouseNow.Y - mouseNow.Y % world.GetLayer().GridY + mouseStamp.Height / 2;
+                        mouseS.X = mouseS.X - mouseS.X % world.GetLayer().GridX + mouseStamp.Width / 2 - mouseStamp.Width;
+                        mouseS.Y = mouseS.Y - mouseS.Y % world.GetLayer().GridY + mouseStamp.Height / 2 + mouseStamp.Height;
+                    }
+                    else
+                    {
+                        mouseS.X -= mouseStamp.Width / 2;
+                        mouseS.Y += mouseStamp.Height / 2;
+                    }
+                    mouseNow.X += mouseStamp.Width / 2;
+                    mouseNow.Y -= mouseStamp.Height / 2;
+
                     int startY = mouseS.Y;
                     do
                     {
@@ -468,14 +490,57 @@ namespace WorldBuilder
             else if (mousemode == MouseMode.StampEntity)
             {
                 mouseStamp.Position = AdjustPoint(mouseCurrent);
+                if (gridAlign == true && world.GetLayer().GridX > 0 && world.GetLayer().GridY > 0)
+                {
+                    mouseStamp.X = mouseStamp.X - mouseStamp.X % world.GetLayer().GridX + mouseStamp.Width / 2;
+                    //mouseStamp.X -= (mouse.X - mouseStamp.Width / 2) % world.GetLayer().GridX;
+                    mouseStamp.Y = mouseStamp.Y - mouseStamp.Y % world.GetLayer().GridY + mouseStamp.Height / 2;
+                    // mouseStamp.Y -= (mouse.Y - mouseStamp.Height / 2) % world.GetLayer().GridY;
+                }
                 Layer currentLayer = world.GetLayer();
                 currentLayer.AddEntity(mouseStamp.Clone());
                 mousemode = MouseMode.StampEntity;
                 //mouseStamp.
                 //MessageBox.Show(mouseStamp.Name);
             }
+            else if (mousemode == MouseMode.TileEntity)
+            {
+                Point mouseNow = AdjustPoint(mouseCurrent);
+                Point mouseS = AdjustPoint(mouseStart);
+                if (gridAlign == true && world.GetLayer().GridX > 0 && world.GetLayer().GridY > 0)
+                {
+                    //mouseNow.X = mouseNow.X - mouseNow.X % world.GetLayer().GridX + mouseStamp.Width / 2;
+                    //mouseNow.Y = mouseNow.Y - mouseNow.Y % world.GetLayer().GridY + mouseStamp.Height / 2;
+                    mouseS.X = mouseS.X - mouseS.X % world.GetLayer().GridX + mouseStamp.Width / 2 - mouseStamp.Width;
+                    mouseS.Y = mouseS.Y - mouseS.Y % world.GetLayer().GridY + mouseStamp.Height / 2 + mouseStamp.Height;
+                }
+                else
+                {
+                    mouseS.X -= mouseStamp.Width / 2;
+                    mouseS.Y += mouseStamp.Height / 2;
+                }
+                mouseNow.X += mouseStamp.Width / 2;
+                mouseNow.Y -= mouseStamp.Height / 2;
 
-            if (mousemode != MouseMode.StampEntity)
+                int startY = mouseS.Y;
+                do
+                {
+                    mouseS.X += mouseStamp.Width;
+                    while (mouseS.Y - mouseNow.Y > mouseStamp.Height)
+                    {
+                        mouseS.Y -= mouseStamp.Height;
+                        mouseStamp.X = mouseS.X;
+                        mouseStamp.Y = mouseS.Y;
+                        //mouseStamp.Draw();
+                        Layer currentLayer = world.GetLayer();
+                        currentLayer.AddEntity(mouseStamp.Clone());
+                        mousemode = MouseMode.StampEntity;
+                    }
+                    mouseS.Y = startY;
+                } while (mouseNow.X - mouseS.X > mouseStamp.Width);
+            }
+
+            if (mousemode != MouseMode.StampEntity )
             {
                 mousemode = MouseMode.None;
                 mouseStamp = null;
@@ -543,6 +608,17 @@ namespace WorldBuilder
 
             glWorld.Draw();
 
+        }
+
+        private void toolStripButton9_Click(object sender, EventArgs e)
+        {
+            gridAlign = !gridAlign;
+
+        }
+
+        private void bShowGrid_Click(object sender, EventArgs e)
+        {
+            showGrid = !showGrid;
         }
 
 

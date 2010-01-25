@@ -12,7 +12,8 @@ namespace WorldBuilder
         private static int id = 0;
 
         string m_name;
-        Point m_position;
+        float m_x;
+        float m_y;
         float m_rot;
         float m_scalex;
         float m_scaley;
@@ -24,7 +25,8 @@ namespace WorldBuilder
         {
             m_name = "Unnamed" + id.ToString();
             id++;
-            m_position = new Point(0, 0);
+            m_x = 0;
+            m_y = 0;
             m_rot = 0;
             m_scalex = 1.0f;
             m_scaley = 1.0f;
@@ -44,10 +46,10 @@ namespace WorldBuilder
             //MessageBox.Show(m_node.IsSelected.ToString());
         }
 
-        public void Translate(int x, int y)
+        public void Translate(float x, float y)
         {
-            m_position.X += x;
-            m_position.Y += y;
+            m_x += x;
+            m_y += y;
         }
 
 
@@ -61,10 +63,21 @@ namespace WorldBuilder
 
         #region Public Accessors
 
+        public float X
+        {
+            get { return m_x; }
+            set { m_x = value; }
+        }
+
+        public float Y
+        {
+            get { return m_y; }
+            set { m_y = value; }
+        }
+
         public Point Position
         {
-            get { return m_position; }
-            set { m_position = value; }
+            set { m_x = value.X; m_y = value.Y; }
         }
 
         public float Rotation
@@ -76,13 +89,13 @@ namespace WorldBuilder
         public float ScaleX
         {
             get { return m_scalex; }
-            set { m_scalex = value; }
+            set { if (value > 0) m_scalex = value; }
         }
 
         public float ScaleY
         {
             get { return m_scaley; }
-            set { m_scaley = value; }
+            set { if (value > 0) m_scaley = value; }
         }
 
         public bool FlipHorizontal
@@ -102,6 +115,9 @@ namespace WorldBuilder
             get { return m_name; }
             set { m_name = value; if (m_node != null) m_node.Text = value; }
         }
+
+        public abstract int Width { get; set; }
+        public abstract int Height { get; set; }
 
         #endregion
     }

@@ -193,6 +193,24 @@ namespace WorldBuilder
             try
             {
                 world.GetLevel().Draw();
+                Layer l = world.GetLayer();
+                if (l.GridX > 0 && l.GridY > 0)
+                {
+                    Gl.glColor3f(1, 1, 1);
+                    Gl.glBegin(Gl.GL_LINES);
+                    for (int x = screenTranslation.X; x < glWorld.Width - screenTranslation.X; x += l.GridX)
+                    {
+                        for (int y = screenTranslation.Y; y < glWorld.Height - screenTranslation.Y; y += l.GridY)
+                        {
+                            Gl.glVertex2i(x,y);
+                            Gl.glVertex2i(x,y + glWorld.Height);
+
+                            Gl.glVertex2i(x, y);
+                            Gl.glVertex2i(x + glWorld.Width, y);
+                        }
+                    }
+                    Gl.glEnd();
+                }
             }
             catch(Exception)
             {}
@@ -225,8 +243,31 @@ namespace WorldBuilder
                 case MouseMode.StampEntity:
                     Gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
                     Point mouse = AdjustPoint(mouseCurrent);
-                    mouseStamp.Position = mouse;
+                    mouseStamp.X = mouse.X;
+                    mouseStamp.Y = mouse.Y;
                     mouseStamp.Draw();
+                    break;
+                case MouseMode.TileEntity:
+                    Gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+                    Point mouseNow = AdjustPoint(mouseCurrent);
+                    Point mouseS = AdjustPoint(mouseStart);
+                    mouseS.X -= mouseStamp.Width/2;
+                    mouseS.Y += mouseStamp.Height/2;
+                    mouseNow.X += mouseStamp.Width/2;
+                    mouseNow.Y -= mouseStamp.Height/2;
+                    int startY = mouseS.Y;
+                    do
+                    {
+                        mouseS.X += mouseStamp.Width;
+                        while (mouseS.Y - mouseNow.Y > mouseStamp.Height)
+                        {
+                            mouseS.Y -= mouseStamp.Height;
+                            mouseStamp.X = mouseS.X;
+                            mouseStamp.Y = mouseS.Y;
+                            mouseStamp.Draw();
+                        }
+                        mouseS.Y = startY;
+                    } while (mouseNow.X - mouseS.X > mouseStamp.Width);
                     break;
                 case MouseMode.ScaleEntity:
                     //Gl.glColor4f(1, 1, 1, 0);
@@ -250,9 +291,11 @@ namespace WorldBuilder
         Point mouseStart;
         Point mouseCurrent;
 
-        enum MouseMode { None, TranslateEntity, RotateEntity, ScaleEntity, TranslateScreen, SelectEntity, StampEntity };
+        enum MouseMode { None, TranslateEntity, RotateEntity, ScaleEntity, TranslateScreen, SelectEntity, StampEntity, TileEntity };
         MouseMode mousemode = MouseMode.None;
         Entity mouseStamp = null;
+
+        bool mouseLeftDown = false;
 
         Point AdjustPoint(Point point)
         {
@@ -311,13 +354,9 @@ namespace WorldBuilder
                         selectedEntities.Clear();
                         mousemode = MouseMode.SelectEntity;
                     }
-                    else if (mousemode == MouseMode.StampEntity)
+                    if (mousemode == MouseMode.StampEntity)
                     {
-                        mouseStamp.Position = AdjustPoint(mouseCurrent);
-                        currentLayer.AddEntity(mouseStamp.Clone());
-                        mousemode = MouseMode.StampEntity;
-                        //mouseStamp.
-                        //MessageBox.Show(mouseStamp.Name);
+                        mouseLeftDown = true;
                     }
                     break;
                 case MouseButtons.Right:
@@ -348,7 +387,7 @@ namespace WorldBuilder
             lMouse.Text = "World Position (" + mouseAdjust.X.ToString() + ", " + mouseAdjust.Y.ToString() + ")";
             lMouseScreen.Text = "Mouse Position (" + mouseCurrent.X.ToString() + ", " + mouseCurrent.Y.ToString() + ")";
             //mouseCurrent.X -= screenTranslation.X;
-            int tx, ty = 0;
+            float tx, ty = 0;
             switch (mousemode)
             {
                 case MouseMode.TranslateEntity:
@@ -356,17 +395,22 @@ namespace WorldBuilder
                     tx = mouseCurrent.X - mouseStart.X;
                     ty = mouseCurrent.Y - mouseStart.Y;
                     mouseStart = mouseCurrent;
+                    if (screenZoom != 1)
+                    {
+                        tx = (tx / (float)screenZoom);
+                        ty = (ty / (float)screenZoom);
+                    }
                     foreach (Entity entity in selectedEntities)
                     {
-                        entity.Translate((int)(tx / screenZoom), (int)(ty / screenZoom));
+                        entity.Translate(tx, ty);
                     }
                     break;
                 case MouseMode.TranslateScreen:
                     tx = mouseCurrent.X - mouseStart.X;
                     ty = mouseCurrent.Y - mouseStart.Y;
                     mouseStart = mouseCurrent;
-                    screenTranslation.X += tx;
-                    screenTranslation.Y += ty;
+                    screenTranslation.X += (int)tx;
+                    screenTranslation.Y += (int)ty;
                     break;
                 case MouseMode.ScaleEntity:
                     float scale = (mouseCurrent.X - mouseStart.X) * 0.001f;
@@ -374,6 +418,12 @@ namespace WorldBuilder
                     {
                         entity.ScaleX += scale;
                         entity.ScaleY += scale;
+                    }
+                    break;
+                case MouseMode.StampEntity:
+                    if (mouseLeftDown == true && (Math.Abs(mouseCurrent.X - mouseStart.X) > 10 || Math.Abs(mouseStart.Y - mouseCurrent.Y) > 10))
+                    {
+                        mousemode = MouseMode.TileEntity;
                     }
                     break;
                 default:
@@ -388,6 +438,8 @@ namespace WorldBuilder
 
         private void glWorld_MouseUp(object sender, MouseEventArgs e)
         {
+            if (e.Button == MouseButtons.Left)
+                mouseLeftDown = false;
             if (mousemode == MouseMode.SelectEntity)
             {
                 Layer selectedLayer = world.GetLayer();
@@ -405,8 +457,29 @@ namespace WorldBuilder
                 }
                 
             }
-            if (mousemode != MouseMode.StampEntity) 
+            else if (mousemode == MouseMode.ScaleEntity)
+            {
+                if (mouseCurrent.X == mouseStart.X && mouseCurrent.Y == mouseStart.Y)
+                {
+                    mousemode = MouseMode.None;
+                    selectedEntities.Clear();
+                }
+            }
+            else if (mousemode == MouseMode.StampEntity)
+            {
+                mouseStamp.Position = AdjustPoint(mouseCurrent);
+                Layer currentLayer = world.GetLayer();
+                currentLayer.AddEntity(mouseStamp.Clone());
+                mousemode = MouseMode.StampEntity;
+                //mouseStamp.
+                //MessageBox.Show(mouseStamp.Name);
+            }
+
+            if (mousemode != MouseMode.StampEntity)
+            {
                 mousemode = MouseMode.None;
+                mouseStamp = null;
+            }
 
             //MessageBox.Show("There are now " + selectedEntities.Count.ToString() + " entities selected and mouse type is " + mousemode.ToString());
         }
@@ -453,6 +526,10 @@ namespace WorldBuilder
                     if (SourceNode.Tag.GetType().BaseType == typeof(Entity))
                     {
                         //Move entity to bottom of layer
+                        ((Layer)SourceNode.Parent.Tag).DeleteNode(SourceNode);
+                        DestinationNode.Nodes.Add(SourceNode);
+                        SourceNode.TreeView.SelectedNode = SourceNode;
+                        ((Layer)SourceNode.Parent.Tag).SortNodes();
                     }
                     if (SourceNode.Tag.GetType() == typeof(Layer))
                     {

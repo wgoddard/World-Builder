@@ -168,6 +168,7 @@
             // WorldTree
             // 
             this.WorldTree.AllowDrop = true;
+            this.WorldTree.CheckBoxes = true;
             this.WorldTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.WorldTree.Location = new System.Drawing.Point(0, 25);
             this.WorldTree.Name = "WorldTree";

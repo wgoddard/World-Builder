@@ -31,10 +31,12 @@ namespace WorldBuilder
             m_cms.Items[0].Name = "AddLayer";
             m_cms.Items[0].Click += new EventHandler(AddLayer_Click);
             m_node.ContextMenuStrip = m_cms;
+            m_node.Checked = true;
         }
 
         public void Draw()
         {
+            if (m_node.Checked == false) return;
             foreach (Layer layer in m_layers)
             {
                 layer.Draw();

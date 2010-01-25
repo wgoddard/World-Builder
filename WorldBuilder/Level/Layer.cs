@@ -12,6 +12,9 @@ namespace WorldBuilder
         TreeNode m_node;
         string m_name;
 
+        int m_gridX = 0;
+        int m_gridY = 0;
+
         public Layer(TreeNode node)
         {
             m_entities = new List<Entity>();
@@ -19,6 +22,7 @@ namespace WorldBuilder
             m_node.Tag = this;
             m_node.TreeView.SelectedNode = m_node;
             m_name = m_node.Text;
+            m_node.Checked = true;
         }
 
         public void AddEntity(Entity entity)
@@ -48,6 +52,7 @@ namespace WorldBuilder
 
         public Entity SelectEntity(System.Drawing.Point point)
         {
+            if (m_node.Checked == false) return null;
             //foreach (Entity entity in m_entities)
             for (int i = m_entities.Count - 1; i >= 0; --i)
             {
@@ -59,6 +64,7 @@ namespace WorldBuilder
 
         public List<Entity> SelectEntities(System.Drawing.Rectangle rect)
         {
+            if (m_node.Checked == false) return null;
             List<Entity> entities = new List<Entity>();
             foreach (Entity entity in m_entities)
             {
@@ -71,6 +77,7 @@ namespace WorldBuilder
 
         public void Draw()
         {
+            if (m_node.Checked == false) return;
             foreach (Entity entity in m_entities)
             {
                 entity.Draw();
@@ -81,6 +88,17 @@ namespace WorldBuilder
         {
             get { return m_name; }
             set { m_name = value; m_node.Text = value; }
+        }
+
+        public int GridX
+        {
+            get { return m_gridX; }
+            set { m_gridX = value; }
+        }
+        public int GridY
+        {
+            get { return m_gridY; }
+            set { m_gridY = value; }
         }
     }
 }

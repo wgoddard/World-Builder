@@ -29,6 +29,7 @@ namespace WorldBuilder
             m_name = name;
             m_tv.Nodes[0].ContextMenuStrip = m_cms;
             m_tv.Nodes[0].Tag = this;
+            m_tv.Nodes[0].Checked = true;
         }
 
         public void Select(Level level, Layer layer)

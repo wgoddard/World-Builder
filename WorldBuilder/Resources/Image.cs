@@ -18,12 +18,19 @@ namespace WorldBuilder
             filename = file_name;
             // Il.ilDeleteImage(images[0]);
 
-            textureID = Ilut.ilutGLLoadImage(filename);
+            try
+            {
+                textureID = Ilut.ilutGLLoadImage(filename);
 
-            //Gl.glBindTexture(Gl.GL_TEXTURE_2D, textureID);
+                //Gl.glBindTexture(Gl.GL_TEXTURE_2D, textureID);
 
-            width = Il.ilGetInteger(Il.IL_IMAGE_WIDTH);
-            height = Il.ilGetInteger(Il.IL_IMAGE_HEIGHT);
+                width = Il.ilGetInteger(Il.IL_IMAGE_WIDTH);
+                height = Il.ilGetInteger(Il.IL_IMAGE_HEIGHT);
+            }
+            catch (Exception e)
+            {
+                System.Windows.Forms.MessageBox.Show( e.ToString());
+            }
         }
 
         ~Image()

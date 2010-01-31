@@ -30,6 +30,8 @@ namespace WorldBuilder
             m_tv.Nodes[0].ContextMenuStrip = m_cms;
             m_tv.Nodes[0].Tag = this;
             m_tv.Nodes[0].Checked = true;
+            m_tv.Nodes[0].ImageIndex = 44;
+            m_tv.Nodes[0].SelectedImageIndex = 44;
         }
 
         public void Select(Level level, Layer layer)

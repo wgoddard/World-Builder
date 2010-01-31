@@ -10,6 +10,7 @@ namespace WorldBuilder
     {
         List<Entity> m_entities;
         TreeNode m_node;
+        ContextMenuStrip m_cms;
         string m_name;
 
         int m_gridX = 0;
@@ -23,6 +24,20 @@ namespace WorldBuilder
             m_node.TreeView.SelectedNode = m_node;
             m_name = m_node.Text;
             m_node.Checked = true;
+
+            m_cms = new ContextMenuStrip();
+            m_cms.Items.Add("Delete");
+            m_cms.Items[0].Name = "Delete";
+            m_cms.Items[0].Click += new EventHandler(Delete_Click);
+            m_node.ContextMenuStrip = m_cms;
+            m_node.ImageIndex = 24;
+            m_node.SelectedImageIndex = 24;
+        }
+
+        void Delete_Click(object sender, EventArgs e)
+        {
+            Delete();
+            //throw new NotImplementedException();
         }
 
         public void AddEntity(Entity entity)
@@ -50,6 +65,12 @@ namespace WorldBuilder
             m_node.Nodes.Remove(node);
         }
 
+
+        public void Delete()
+        {
+            ((Level)m_node.Parent.Tag).DeleteNode(m_node);
+        }
+
         public Entity SelectEntity(System.Drawing.Point point)
         {
             if (m_node.Checked == false) return null;
@@ -71,6 +92,13 @@ namespace WorldBuilder
                 if (entity.Collide(rect))
                     entities.Add(entity);
             }
+            return entities;
+        }
+
+        public List<Entity> SelectAll()
+        {
+            List<Entity> entities = new List<Entity>();
+            entities.AddRange(m_entities);
             return entities;
         }
 

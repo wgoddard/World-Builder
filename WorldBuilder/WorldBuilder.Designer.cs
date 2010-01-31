@@ -34,25 +34,37 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newWorldToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+            this.bOpenTextures = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.bShowGrid = new System.Windows.Forms.ToolStripButton();
             this.bGridAlign = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.bZoomIn = new System.Windows.Forms.ToolStripButton();
+            this.bResetZoom = new System.Windows.Forms.ToolStripButton();
+            this.bZoomOut = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.bStartGame = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.WorldTree = new System.Windows.Forms.TreeView();
+            this.imageIcons = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
-            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
+            this.bAddNode = new System.Windows.Forms.ToolStripButton();
+            this.bMoveNodeUp = new System.Windows.Forms.ToolStripButton();
+            this.bMoveNodeDown = new System.Windows.Forms.ToolStripButton();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.glWorld = new Tao.Platform.Windows.SimpleOpenGlControl();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.lMouseScreen = new System.Windows.Forms.Label();
             this.lMouse = new System.Windows.Forms.Label();
             this.lLayer = new System.Windows.Forms.Label();
@@ -62,6 +74,7 @@
             this.listTextures = new System.Windows.Forms.ListView();
             this.textureList = new System.Windows.Forms.ImageList(this.components);
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.tvObjects = new System.Windows.Forms.TreeView();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.contextMenuWorld = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openTextures = new System.Windows.Forms.OpenFileDialog();
@@ -82,12 +95,14 @@
             this.splitContainer4.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.toolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1008, 24);
@@ -98,7 +113,8 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newWorldToolStripMenuItem,
-            this.addTexturesToolStripMenuItem});
+            this.addTexturesToolStripMenuItem,
+            this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -106,16 +122,30 @@
             // newWorldToolStripMenuItem
             // 
             this.newWorldToolStripMenuItem.Name = "newWorldToolStripMenuItem";
-            this.newWorldToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.newWorldToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.newWorldToolStripMenuItem.Text = "New World";
             this.newWorldToolStripMenuItem.Click += new System.EventHandler(this.newWorldToolStripMenuItem_Click);
             // 
             // addTexturesToolStripMenuItem
             // 
             this.addTexturesToolStripMenuItem.Name = "addTexturesToolStripMenuItem";
-            this.addTexturesToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
-            this.addTexturesToolStripMenuItem.Text = "Add Textures";
+            this.addTexturesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addTexturesToolStripMenuItem.Text = "Open Textures";
             this.addTexturesToolStripMenuItem.Click += new System.EventHandler(this.addTexturesToolStripMenuItem_Click);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(52, 20);
+            this.toolStripMenuItem1.Text = "About";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // toolStrip1
             // 
@@ -124,9 +154,16 @@
             this.toolStripButton6,
             this.toolStripButton3,
             this.toolStripSeparator1,
-            this.toolStripButton5,
+            this.bOpenTextures,
+            this.toolStripSeparator3,
             this.bShowGrid,
-            this.bGridAlign});
+            this.bGridAlign,
+            this.toolStripSeparator2,
+            this.bZoomIn,
+            this.bResetZoom,
+            this.bZoomOut,
+            this.toolStripSeparator4,
+            this.bStartGame});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1008, 25);
@@ -165,14 +202,20 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButton5
+            // bOpenTextures
             // 
-            this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton5.Image")));
-            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton5.Name = "toolStripButton5";
-            this.toolStripButton5.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton5.Text = "toolStripButton5";
+            this.bOpenTextures.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bOpenTextures.Image = ((System.Drawing.Image)(resources.GetObject("bOpenTextures.Image")));
+            this.bOpenTextures.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bOpenTextures.Name = "bOpenTextures";
+            this.bOpenTextures.Size = new System.Drawing.Size(23, 22);
+            this.bOpenTextures.Text = "Open Textures";
+            this.bOpenTextures.Click += new System.EventHandler(this.bOpenTextures_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
             // bShowGrid
             // 
@@ -191,8 +234,54 @@
             this.bGridAlign.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.bGridAlign.Name = "bGridAlign";
             this.bGridAlign.Size = new System.Drawing.Size(23, 22);
-            this.bGridAlign.Text = "Grid Align (Bottom Left)";
+            this.bGridAlign.Text = "Snap To Grid (Bottom Left)";
             this.bGridAlign.Click += new System.EventHandler(this.toolStripButton9_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // bZoomIn
+            // 
+            this.bZoomIn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bZoomIn.Image = ((System.Drawing.Image)(resources.GetObject("bZoomIn.Image")));
+            this.bZoomIn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bZoomIn.Name = "bZoomIn";
+            this.bZoomIn.Size = new System.Drawing.Size(23, 22);
+            this.bZoomIn.Text = "Zoom In";
+            // 
+            // bResetZoom
+            // 
+            this.bResetZoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bResetZoom.Image = ((System.Drawing.Image)(resources.GetObject("bResetZoom.Image")));
+            this.bResetZoom.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bResetZoom.Name = "bResetZoom";
+            this.bResetZoom.Size = new System.Drawing.Size(23, 22);
+            this.bResetZoom.Text = "Reset Zoom";
+            // 
+            // bZoomOut
+            // 
+            this.bZoomOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bZoomOut.Image = ((System.Drawing.Image)(resources.GetObject("bZoomOut.Image")));
+            this.bZoomOut.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bZoomOut.Name = "bZoomOut";
+            this.bZoomOut.Size = new System.Drawing.Size(23, 22);
+            this.bZoomOut.Text = "Zoom Out";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
+            // 
+            // bStartGame
+            // 
+            this.bStartGame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bStartGame.Image = ((System.Drawing.Image)(resources.GetObject("bStartGame.Image")));
+            this.bStartGame.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bStartGame.Name = "bStartGame";
+            this.bStartGame.Size = new System.Drawing.Size(23, 22);
+            this.bStartGame.Text = "Execute Game";
             // 
             // splitContainer1
             // 
@@ -236,54 +325,109 @@
             this.WorldTree.AllowDrop = true;
             this.WorldTree.CheckBoxes = true;
             this.WorldTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.WorldTree.HideSelection = false;
+            this.WorldTree.ImageIndex = 0;
+            this.WorldTree.ImageList = this.imageIcons;
             this.WorldTree.Location = new System.Drawing.Point(0, 25);
             this.WorldTree.Name = "WorldTree";
+            this.WorldTree.SelectedImageIndex = 0;
             this.WorldTree.Size = new System.Drawing.Size(212, 423);
             this.WorldTree.TabIndex = 1;
             this.WorldTree.DragDrop += new System.Windows.Forms.DragEventHandler(this.WorldTree_DragDrop);
             this.WorldTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.WorldTree_AfterSelect);
             this.WorldTree.DragEnter += new System.Windows.Forms.DragEventHandler(this.WorldTree_DragEnter);
             this.WorldTree.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.WorldTree_ItemDrag);
-            this.WorldTree.Click += new System.EventHandler(this.WorldTree_Click);
+            // 
+            // imageIcons
+            // 
+            this.imageIcons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageIcons.ImageStream")));
+            this.imageIcons.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageIcons.Images.SetKeyName(0, "application_key.png");
+            this.imageIcons.Images.SetKeyName(1, "book.png");
+            this.imageIcons.Images.SetKeyName(2, "box.png");
+            this.imageIcons.Images.SetKeyName(3, "bug.png");
+            this.imageIcons.Images.SetKeyName(4, "camera.png");
+            this.imageIcons.Images.SetKeyName(5, "car.png");
+            this.imageIcons.Images.SetKeyName(6, "chart_bar.png");
+            this.imageIcons.Images.SetKeyName(7, "chart_curve.png");
+            this.imageIcons.Images.SetKeyName(8, "chart_pie.png");
+            this.imageIcons.Images.SetKeyName(9, "clock.png");
+            this.imageIcons.Images.SetKeyName(10, "color_wheel.png");
+            this.imageIcons.Images.SetKeyName(11, "comment.png");
+            this.imageIcons.Images.SetKeyName(12, "computer.png");
+            this.imageIcons.Images.SetKeyName(13, "contrast.png");
+            this.imageIcons.Images.SetKeyName(14, "controller.png");
+            this.imageIcons.Images.SetKeyName(15, "door.png");
+            this.imageIcons.Images.SetKeyName(16, "eye.png");
+            this.imageIcons.Images.SetKeyName(17, "film.png");
+            this.imageIcons.Images.SetKeyName(18, "font.png");
+            this.imageIcons.Images.SetKeyName(19, "group.png");
+            this.imageIcons.Images.SetKeyName(20, "heart.png");
+            this.imageIcons.Images.SetKeyName(21, "hourglass.png");
+            this.imageIcons.Images.SetKeyName(22, "image.png");
+            this.imageIcons.Images.SetKeyName(23, "information.png");
+            this.imageIcons.Images.SetKeyName(24, "layers.png");
+            this.imageIcons.Images.SetKeyName(25, "lightbulb.png");
+            this.imageIcons.Images.SetKeyName(26, "map.png");
+            this.imageIcons.Images.SetKeyName(27, "music.png");
+            this.imageIcons.Images.SetKeyName(28, "palette.png");
+            this.imageIcons.Images.SetKeyName(29, "photo.png");
+            this.imageIcons.Images.SetKeyName(30, "picture.png");
+            this.imageIcons.Images.SetKeyName(31, "rainbow.png");
+            this.imageIcons.Images.SetKeyName(32, "script.png");
+            this.imageIcons.Images.SetKeyName(33, "script_code.png");
+            this.imageIcons.Images.SetKeyName(34, "script_edit.png");
+            this.imageIcons.Images.SetKeyName(35, "shape_square.png");
+            this.imageIcons.Images.SetKeyName(36, "sport_8ball.png");
+            this.imageIcons.Images.SetKeyName(37, "sport_basketball.png");
+            this.imageIcons.Images.SetKeyName(38, "star.png");
+            this.imageIcons.Images.SetKeyName(39, "time.png");
+            this.imageIcons.Images.SetKeyName(40, "user.png");
+            this.imageIcons.Images.SetKeyName(41, "user_female.png");
+            this.imageIcons.Images.SetKeyName(42, "user_green.png");
+            this.imageIcons.Images.SetKeyName(43, "user_suit.png");
+            this.imageIcons.Images.SetKeyName(44, "world.png");
             // 
             // toolStrip2
             // 
             this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButton2,
-            this.toolStripButton4,
-            this.toolStripButton7});
+            this.bAddNode,
+            this.bMoveNodeUp,
+            this.bMoveNodeDown});
             this.toolStrip2.Location = new System.Drawing.Point(0, 0);
             this.toolStrip2.Name = "toolStrip2";
             this.toolStrip2.Size = new System.Drawing.Size(212, 25);
             this.toolStrip2.TabIndex = 0;
             this.toolStrip2.Text = "toolStrip2";
             // 
-            // toolStripButton2
+            // bAddNode
             // 
-            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
-            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton2.Text = "toolStripButton2";
+            this.bAddNode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bAddNode.Image = ((System.Drawing.Image)(resources.GetObject("bAddNode.Image")));
+            this.bAddNode.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bAddNode.Name = "bAddNode";
+            this.bAddNode.Size = new System.Drawing.Size(23, 22);
+            this.bAddNode.Text = "Add";
             // 
-            // toolStripButton4
+            // bMoveNodeUp
             // 
-            this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
-            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton4.Name = "toolStripButton4";
-            this.toolStripButton4.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton4.Text = "toolStripButton4";
+            this.bMoveNodeUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bMoveNodeUp.Image = ((System.Drawing.Image)(resources.GetObject("bMoveNodeUp.Image")));
+            this.bMoveNodeUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bMoveNodeUp.Name = "bMoveNodeUp";
+            this.bMoveNodeUp.Size = new System.Drawing.Size(23, 22);
+            this.bMoveNodeUp.Text = "Move Up";
+            this.bMoveNodeUp.Click += new System.EventHandler(this.bMoveNodeUp_Click);
             // 
-            // toolStripButton7
+            // bMoveNodeDown
             // 
-            this.toolStripButton7.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton7.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton7.Image")));
-            this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton7.Name = "toolStripButton7";
-            this.toolStripButton7.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton7.Text = "toolStripButton7";
+            this.bMoveNodeDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bMoveNodeDown.Image = ((System.Drawing.Image)(resources.GetObject("bMoveNodeDown.Image")));
+            this.bMoveNodeDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bMoveNodeDown.Name = "bMoveNodeDown";
+            this.bMoveNodeDown.Size = new System.Drawing.Size(23, 22);
+            this.bMoveNodeDown.Text = "Move Down";
+            this.bMoveNodeDown.Click += new System.EventHandler(this.bMoveNodeDown_Click);
             // 
             // propertyGrid
             // 
@@ -325,6 +469,8 @@
             // 
             // splitContainer4.Panel2
             // 
+            this.splitContainer4.Panel2.Controls.Add(this.button4);
+            this.splitContainer4.Panel2.Controls.Add(this.button2);
             this.splitContainer4.Panel2.Controls.Add(this.lMouseScreen);
             this.splitContainer4.Panel2.Controls.Add(this.lMouse);
             this.splitContainer4.Panel2.Controls.Add(this.lLayer);
@@ -354,6 +500,27 @@
             this.glWorld.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glWorld_MouseMove);
             this.glWorld.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glWorld_MouseDown);
             this.glWorld.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glWorld_MouseUp);
+            this.glWorld.KeyDown += new System.Windows.Forms.KeyEventHandler(this.glWorld_KeyDown);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(26, 56);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 4;
+            this.button4.Text = "button4";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(234, 28);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 3;
+            this.button2.Text = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // lMouseScreen
             // 
@@ -385,7 +552,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(76, 27);
             this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
+            this.button1.Text = "Reset Zoom";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -428,17 +595,27 @@
             // textureList
             // 
             this.textureList.ColorDepth = System.Windows.Forms.ColorDepth.Depth16Bit;
-            this.textureList.ImageSize = new System.Drawing.Size(32, 32);
+            this.textureList.ImageSize = new System.Drawing.Size(64, 64);
             this.textureList.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.tvObjects);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Size = new System.Drawing.Size(268, 655);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Objects";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // tvObjects
+            // 
+            this.tvObjects.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tvObjects.Location = new System.Drawing.Point(0, 0);
+            this.tvObjects.Name = "tvObjects";
+            this.tvObjects.Size = new System.Drawing.Size(268, 655);
+            this.tvObjects.TabIndex = 0;
+            this.tvObjects.DoubleClick += new System.EventHandler(this.tvObjects_DoubleClick);
             // 
             // tabPage1
             // 
@@ -457,6 +634,7 @@
             // 
             // openTextures
             // 
+            this.openTextures.Filter = "Images|*.png;*.ico;*.jpg;*.jpeg;*.bmp;*.tga;*.gif";
             this.openTextures.Multiselect = true;
             // 
             // WorldBuilder
@@ -467,9 +645,11 @@
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "WorldBuilder";
             this.Text = "World Builder";
+            this.Load += new System.EventHandler(this.WorldBuilder_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
@@ -492,6 +672,7 @@
             this.splitContainer4.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -510,7 +691,6 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.TreeView WorldTree;
-        private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.SplitContainer splitContainer4;
         private Tao.Platform.Windows.SimpleOpenGlControl glWorld;
         private System.Windows.Forms.TabControl tabControl1;
@@ -528,13 +708,27 @@
         private System.Windows.Forms.Label lLayer;
         private System.Windows.Forms.Label lMouseScreen;
         private System.Windows.Forms.ToolStripButton toolStripButton3;
-        private System.Windows.Forms.ToolStripButton toolStripButton4;
-        private System.Windows.Forms.ToolStripButton toolStripButton5;
+        private System.Windows.Forms.ToolStripButton bMoveNodeUp;
+        private System.Windows.Forms.ToolStripButton bStartGame;
         private System.Windows.Forms.ToolStripButton toolStripButton6;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton bShowGrid;
         private System.Windows.Forms.ToolStripButton bGridAlign;
-        private System.Windows.Forms.ToolStripButton toolStripButton7;
+        private System.Windows.Forms.ToolStripButton bMoveNodeDown;
+        private System.Windows.Forms.ToolStripButton bZoomIn;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.TreeView tvObjects;
+        private System.Windows.Forms.ToolStripButton bZoomOut;
+        private System.Windows.Forms.ToolStripButton bOpenTextures;
+        private System.Windows.Forms.ToolStripButton bAddNode;
+        private System.Windows.Forms.ImageList imageIcons;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripButton bResetZoom;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
     }
 }
 

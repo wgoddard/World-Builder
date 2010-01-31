@@ -7,6 +7,17 @@ namespace WorldBuilder
 {
     class AnimatedSprite : Entity
     {
+        AnimatedSprite() { }
+
+        public override int GetIcon()
+        {
+            return 0;
+        }
+
+        protected override string GetName()
+        {
+            return null;
+        }
 
         public override void Draw() { }
         public override void DrawBox()

@@ -9,34 +9,46 @@ namespace WorldBuilder
     class Texture : Entity
     {
         Image m_image;
+        static int id = 0;
 
         public Texture(Image image) : base()
         {
             m_image = image;
         }
 
+        protected override string GetName()
+        {
+            return "Texture" + id++.ToString();
+
+        }
+
         public override void Draw()
         {
-            //Gl.glPushMatrix();
-            //Gl.glScalef(ScaleX, ScaleY, 0);
             Gl.glBindTexture(Gl.GL_TEXTURE_2D, m_image.TextureID);
-            //Gl.glColor3f(1.0f, 1.0f, 1.0f);
+
+            Gl.glPushMatrix();
+            Gl.glTranslatef(base.X, base.Y, 0);
+            Gl.glScalef(ScaleX * (FlipHorizontal ? -1 : 1), ScaleY * (FlipVertical ? -1 : 1), 0);
+            Gl.glRotated(base.Rotation, 0, 0, 1);
+
+
             Gl.glBegin(Gl.GL_QUADS);
 
             Gl.glTexCoord2i(0, 0);
-            Gl.glVertex2i((int)(base.X - (m_image.Width/2 * ScaleX)), (int)(base.Y - (m_image.Height/2 * ScaleY)));
+            Gl.glVertex2i(-(int)(m_image.Width/2), -(int)(m_image.Height/2));
 
             Gl.glTexCoord2i(1, 0);
-            Gl.glVertex2i((int)(base.X + (m_image.Width/2 * ScaleX)), (int)(base.Y - (m_image.Height/2 * ScaleY)));
+            Gl.glVertex2i((int)(m_image.Width/2), -(int)(m_image.Height/2));
 
             Gl.glTexCoord2i(1, 1);
-            Gl.glVertex2i((int)(base.X + (m_image.Width/2 * ScaleX)), (int)(base.Y + (m_image.Height/2 * ScaleY)));
+            Gl.glVertex2i((int)(m_image.Width/2), (int)(m_image.Height/2));
 
             Gl.glTexCoord2i(0, 1);
-            Gl.glVertex2i((int)(base.X - (m_image.Width/2 * ScaleX)), (int)(base.Y + (m_image.Height/2 * ScaleY)));
+            Gl.glVertex2i(-(int)(m_image.Width/2), (int)(m_image.Height/2));
 
             Gl.glEnd();
-            //Gl.glPopMatrix();
+
+            Gl.glPopMatrix();
         }
 
         public override void DrawBox()
@@ -134,6 +146,12 @@ namespace WorldBuilder
             {
                // throw new NotImplementedException();
             }
+        }
+
+        public override int GetIcon()
+        {
+            return 22;
+            //throw new NotImplementedException();
         }
 
     }

@@ -32,6 +32,8 @@ namespace WorldBuilder
             m_cms.Items[0].Click += new EventHandler(AddLayer_Click);
             m_node.ContextMenuStrip = m_cms;
             m_node.Checked = true;
+            m_node.ImageIndex = 26;
+            m_node.SelectedImageIndex = 26;
         }
 
         public void Draw()
@@ -56,6 +58,23 @@ namespace WorldBuilder
             m_selectedLayer = new Layer(node);
             m_layers.Add(m_selectedLayer);
             m_node.Expand();
+        }
+
+        public void DeleteNode(TreeNode node)
+        {
+            if (m_selectedLayer == (Layer)node.Tag)
+                m_selectedLayer = null;
+            m_layers.Remove((Layer)node.Tag);
+            m_node.Nodes.Remove(node);
+        }
+
+        public void SortNodes()
+        {
+            m_layers.Clear();
+            foreach (TreeNode child in m_node.Nodes)
+            {
+                m_layers.Add((Layer)child.Tag);
+            }
         }
 
         public Layer GetCurrentLayer()

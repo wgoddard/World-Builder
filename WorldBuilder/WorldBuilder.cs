@@ -39,28 +39,16 @@ namespace WorldBuilder
 
         void WorldBuilder_MouseWheel(object sender, MouseEventArgs e)
         {
-            //Point newMouse = new Point(mouseCurrent.X, mouseCurrent.Y);
-            //newMouse.X = (int)(newMouse.X * screenZoom);
-            //newMouse.Y = (int)(newMouse.Y * screenZoom);
 
-            //if (e.Delta > 0)
-            //{
-            //    //screenTranslation.X += -(mouseCurrent.X - glWorld.Width / 2);
-            //    //screenTranslation.Y += -(mouseCurrent.Y - glWorld.Height / 2);
-            //}
+            double sz = screenZoom;
+
             screenZoom += 0.001 * e.Delta;
             if (screenZoom < 0.1)
                 screenZoom = 0.01;
 
+            //screenTranslation.X += (int)((screenZoom - sz) * glWorld.Width/2);
+            //screenTranslation.Y += (int)((screenZoom - sz) * glWorld.Height/2);
 
-            //newMouse.X = (int)(newMouse.X / screenZoom);
-            //newMouse.Y = (int)(newMouse.Y / screenZoom);
-
-            //screenTranslation.X += newMouse.X - mouseCurrent.X;
-            //screenTranslation.Y += newMouse.Y - mouseCurrent.Y;
-
-
-            //throw new NotImplementedException();
             glWorld.Draw();
         }
 
@@ -86,14 +74,6 @@ namespace WorldBuilder
             propertyGrid.SelectedObject = world;
         }
 
-        private void WorldTree_Click(object sender, EventArgs e)
-        {
-            //MessageBox.Show("test");
-            //MessageBox.Show(((TreeView)(sender)).SelectedNode.Text);
-            //MessageBox.Show(sender.GetType().ToString());
-            //MessageBox.Show(sender.ToString());
-
-        }
         private void WorldTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
            // if (mousemode == MouseMode.StampEntity) return;
@@ -106,19 +86,22 @@ namespace WorldBuilder
             Level level = null;
             Layer layer = null;
 
-            if (node.Tag.GetType() == typeof(Level))
+            if (node.Tag is Level)
                 level = (Level)node.Tag;
-            if (node.Tag.GetType() == typeof(Layer))
+            if (node.Tag is Layer)
             {
                 layer = (Layer)node.Tag;
                 level = (Level)node.Parent.Tag;
             }
-            if (node.Tag.GetType().BaseType == typeof(Entity))
+            if (node.Tag is Entity)
             {
                 layer = (Layer)node.Parent.Tag;
                 level = (Level)node.Parent.Parent.Tag;
-                selectedEntities.Clear();
-                selectedEntities.Add((Entity)node.Tag);
+                if (e.Action != TreeViewAction.Unknown || tv.Focused)
+                {
+                    selectedEntities.Clear();
+                    selectedEntities.Add((Entity)node.Tag);
+                }
             }
 
            // MessageBox.Show(typeof(Entity).ToString());
@@ -131,6 +114,16 @@ namespace WorldBuilder
 
         private void addTexturesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            OpenTextures();
+        }
+
+        private void bOpenTextures_Click(object sender, EventArgs e)
+        {
+            OpenTextures();
+        }
+
+        private void OpenTextures()
+        {
             OpenFileDialog d = openTextures;
 
             DialogResult r = d.ShowDialog();
@@ -139,11 +132,21 @@ namespace WorldBuilder
             {
                 foreach (string file in d.FileNames)
                 {
-                    textureList.Images.Add(new Bitmap(file));
-                    ListViewItem item = new ListViewItem(file);
+                    try
+                    {
+                        textureList.Images.Add(new Bitmap(file));
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show(file + " is invalid/unsupported.");
+                        continue;
+                    }
+                    ListViewItem item = new ListViewItem(System.IO.Path.GetFileName(file));
                     item.ImageIndex = listTextures.Items.Count;
                     listTextures.Items.Add(item);
-                    Resources.Manager.AddImage(new Image(file));
+                    Image i = new Image(file);
+                    Resources.Manager.AddImage(i);
+                    item.Tag = i;
                 }
             }
         }
@@ -155,7 +158,7 @@ namespace WorldBuilder
 
             //MessageBox.Show(sender.ToString());
 
-            Texture texture = new Texture(Resources.Manager.GetImage(((ListView)sender).SelectedItems[0].Text));
+            Texture texture = new Texture((Image)((ListView)sender).SelectedItems[0].Tag);
             //Point pos = new Point();
             //pos.X -= screenTranslation.X;
             //pos.Y -= screenTranslation.Y;
@@ -184,17 +187,18 @@ namespace WorldBuilder
 
             Gl.glMatrixMode(Gl.GL_PROJECTION);
             Gl.glLoadIdentity();
-            Gl.glOrtho(0, width, 0, height, 0, 1.0);
+            Gl.glOrtho(0, width, 0, height, 0, 1);
+            Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            Gl.glLoadIdentity();
             Gl.glTranslated((double)(screenTranslation.X), (double)(screenTranslation.Y), 0);
             Gl.glScaled(screenZoom, screenZoom, 0);
-            Gl.glMatrixMode(Gl.GL_MODELVIEW);
+
             Gl.glViewport(0, 0, width, height);
 
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
 
             try
             {
-                world.GetLevel().Draw();
                 Layer l = world.GetLayer();
                 if (showGrid && l.GridX > 0 && l.GridY > 0)
                 {
@@ -214,7 +218,9 @@ namespace WorldBuilder
                         }
                     }
                     Gl.glEnd();
+
                 }
+                world.GetLevel().Draw();
             }
             catch(Exception)
             {}
@@ -258,6 +264,10 @@ namespace WorldBuilder
                     }
                     mouseStamp.Draw();
                     break;
+                case MouseMode.DrawRect:
+                    Gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+                    mouseStamp.Draw();
+                    break;
                 case MouseMode.TileEntity:
                     Gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
                     Point mouseNow = AdjustPoint(mouseCurrent);
@@ -271,9 +281,11 @@ namespace WorldBuilder
                     }
                     else
                     {
-                        mouseS.X -= mouseStamp.Width / 2;
-                        mouseS.Y += mouseStamp.Height / 2;
+                       
+                        mouseS.X -= mouseStamp.Width;// / 2;
+                        mouseS.Y += mouseStamp.Height;// / 2;
                     }
+                    
                     mouseNow.X += mouseStamp.Width / 2;
                     mouseNow.Y -= mouseStamp.Height / 2;
 
@@ -313,7 +325,7 @@ namespace WorldBuilder
         Point mouseStart;
         Point mouseCurrent;
 
-        enum MouseMode { None, TranslateEntity, RotateEntity, ScaleEntity, TranslateScreen, SelectEntity, StampEntity, TileEntity };
+        enum MouseMode { None, TranslateEntity, RotateEntity, ScaleEntity, TranslateScreen, SelectEntity, StampEntity, TileEntity, DrawRect, PreDrawRect };
         MouseMode mousemode = MouseMode.None;
         Entity mouseStamp = null;
 
@@ -343,6 +355,9 @@ namespace WorldBuilder
 
         private void glWorld_MouseDown(object sender, MouseEventArgs e)
         {
+            if (world == null) return;
+            if (world.GetLayer() == null) return;
+
             mouseStart = e.Location;
             mouseStart.Y = glWorld.Height - mouseStart.Y;
             //mouseStart.X -= screenTranslation.X;
@@ -355,6 +370,7 @@ namespace WorldBuilder
                 propertyGrid.SelectedObject = selectedEntity;
                 if (selectedEntity != null)
                     selectedEntity.Select();
+                glWorld.Focus();
             }
 
             switch (e.Button)
@@ -380,6 +396,10 @@ namespace WorldBuilder
                     {
                         mouseLeftDown = true;
                     }
+                    if (mousemode == MouseMode.PreDrawRect)
+                    {
+                        mousemode = MouseMode.DrawRect;
+                    }
                     break;
                 case MouseButtons.Right:
                     if (mousemode == MouseMode.StampEntity)
@@ -401,6 +421,8 @@ namespace WorldBuilder
 
         private void glWorld_MouseMove(object sender, MouseEventArgs e)
         {
+            if (world == null) return;
+            //if (world.GetLayer() == null) return;
 
             mouseCurrent = e.Location;
             mouseCurrent.Y = glWorld.Height - mouseCurrent.Y;
@@ -448,6 +470,25 @@ namespace WorldBuilder
                         mousemode = MouseMode.TileEntity;
                     }
                     break;
+                case MouseMode.DrawRect:
+                    Point a = AdjustPoint(mouseCurrent);
+                    Point b = AdjustPoint(mouseStart);
+                    if (gridAlign == true && world.GetLayer().GridX > 0 && world.GetLayer().GridY > 0)
+                    {
+                        b.X -= b.X % world.GetLayer().GridX;
+                        b.Y += world.GetLayer().GridY - b.Y % world.GetLayer().GridY;
+                        //a.X += world.GetLayer().GridX - a.X % world.GetLayer().GridX;
+                        //a.Y += world.GetLayer().GridY - a.Y % world.GetLayer().GridY;
+                        a.X += world.GetLayer().GridX - a.X % world.GetLayer().GridX;
+                        a.Y -= a.Y % world.GetLayer().GridY;
+                       // b.X -= b.X % world.GetLayer().GridX;
+                        //b.Y -= b.Y % world.GetLayer().GridY;
+                        if (a.X == b.X) b.X += world.GetLayer().GridX;
+                        if (a.Y == b.Y) b.Y += world.GetLayer().GridY;
+
+                    }
+                    ((RectShape)mouseStamp).AdjustToPoints(a,b);
+                    break;
                 default:
                     break;
             }
@@ -460,6 +501,9 @@ namespace WorldBuilder
 
         private void glWorld_MouseUp(object sender, MouseEventArgs e)
         {
+            if (world == null) return;
+            if (world.GetLayer() == null) return;
+
             if (e.Button == MouseButtons.Left)
                 mouseLeftDown = false;
             if (mousemode == MouseMode.SelectEntity)
@@ -516,8 +560,8 @@ namespace WorldBuilder
                 }
                 else
                 {
-                    mouseS.X -= mouseStamp.Width / 2;
-                    mouseS.Y += mouseStamp.Height / 2;
+                    mouseS.X -= mouseStamp.Width;//divide each by two to start at top left
+                    mouseS.Y += mouseStamp.Height;
                 }
                 mouseNow.X += mouseStamp.Width / 2;
                 mouseNow.Y -= mouseStamp.Height / 2;
@@ -539,8 +583,14 @@ namespace WorldBuilder
                     mouseS.Y = startY;
                 } while (mouseNow.X - mouseS.X > mouseStamp.Width);
             }
+            else if (mousemode == MouseMode.DrawRect)
+            {
+                Layer currentLayer = world.GetLayer();
+                currentLayer.AddEntity(mouseStamp.Clone());
+                mousemode = MouseMode.PreDrawRect;
+            }
 
-            if (mousemode != MouseMode.StampEntity )
+            if (mousemode != MouseMode.StampEntity && mousemode != MouseMode.PreDrawRect )
             {
                 mousemode = MouseMode.None;
                 mouseStamp = null;
@@ -573,9 +623,9 @@ namespace WorldBuilder
                 if (SourceNode == DestinationNode) return;
 
                 //MessageBox.Show("Source " + SourceNode.Tag.ToString() + " Dest " + DestinationNode.Tag.ToString());
-                if (DestinationNode.Tag.GetType().BaseType == typeof(Entity))
+                if (DestinationNode.Tag is Entity)
                 {
-                    if (SourceNode.Tag.GetType().BaseType == typeof(Entity))
+                    if (SourceNode.Tag is Entity)
                     {
                         //Move SourceNode above Destination
                         //Remove from previous Layer
@@ -586,9 +636,9 @@ namespace WorldBuilder
                         //Add to target's layer (above target)
                     }
                 }
-                if (DestinationNode.Tag.GetType() == typeof(Layer))
+                if (DestinationNode.Tag is Layer)
                 {
-                    if (SourceNode.Tag.GetType().BaseType == typeof(Entity))
+                    if (SourceNode.Tag is Entity)
                     {
                         //Move entity to bottom of layer
                         ((Layer)SourceNode.Parent.Tag).DeleteNode(SourceNode);
@@ -596,7 +646,7 @@ namespace WorldBuilder
                         SourceNode.TreeView.SelectedNode = SourceNode;
                         ((Layer)SourceNode.Parent.Tag).SortNodes();
                     }
-                    if (SourceNode.Tag.GetType() == typeof(Layer))
+                    if (SourceNode.Tag is Layer)
                     {
                         //Move SourceNode above DestNode
                     }
@@ -619,6 +669,209 @@ namespace WorldBuilder
         private void bShowGrid_Click(object sender, EventArgs e)
         {
             showGrid = !showGrid;
+        }
+
+        private void glWorld_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Delete:
+                    foreach (Entity entity in selectedEntities)
+                    {
+                        entity.Delete();
+                    }
+                    selectedEntities.Clear();
+                    break;
+                case Keys.A:
+                    if (e.Control == true)
+                    {
+                        selectedEntities = world.GetLayer().SelectAll();
+                    }
+                    break;
+                case Keys.H:
+                    foreach (Entity entity in selectedEntities)
+                    {
+                        entity.FlipHorizontal = !entity.FlipHorizontal;
+                    }
+                    break;
+                case Keys.V:
+                    foreach (Entity entity in selectedEntities)
+                    {
+                        entity.FlipVertical = !entity.FlipVertical;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            glWorld.Draw();
+
+        }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+
+            //Returns true if the character was processed by the control;
+
+            //otherwise, false.
+
+            bool handled = false;
+
+
+
+            switch (keyData)
+            {
+
+                case Keys.Up:
+                    foreach (Entity entity in selectedEntities)
+                    {
+                        entity.Y = entity.Y + 1;
+                    }
+                    handled = true;
+                    break;
+                case Keys.Down:
+                    foreach (Entity entity in selectedEntities)
+                    {
+                        entity.Y -= 1;
+                    }
+                    handled = true;
+                    break;
+                case Keys.Right:
+                    foreach (Entity entity in selectedEntities)
+                    {
+                        entity.X += 1;
+                    }
+                    handled = true;
+                    break;
+                case Keys.Left:
+                    foreach (Entity entity in selectedEntities)
+                    {
+                        entity.X -= 1;
+                    }
+                    handled = true;
+                    break;
+                default:
+                    break;
+            }
+
+            glWorld.Draw();
+            return handled;
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Texture t = new Texture(new Image("a"));
+            foreach (System.Reflection.PropertyInfo o in t.GetType().GetProperties())
+            {
+                try
+                {
+                    MessageBox.Show(o.GetValue(t, null).ToString());
+                }
+                catch (Exception)
+                {
+                }
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            RegularPoly texture = new RegularPoly();
+            mousemode = MouseMode.StampEntity;
+            mouseStamp = texture;
+        }
+
+
+
+        TreeNode shapes = new TreeNode("Shapes");
+            TreeNode regPoly = new TreeNode("Regular Polygon");
+            TreeNode rectangle = new TreeNode("Rectangle");
+        TreeNode animations = new TreeNode("Animations");
+        TreeNode entities = new TreeNode("Entities");
+
+        private void WorldBuilder_Load(object sender, EventArgs e)
+        {
+            
+            tvObjects.Nodes.Add(shapes); 
+                shapes.Nodes.Add(regPoly);
+                    regPoly.Tag = new RegularPoly();
+                shapes.Nodes.Add(rectangle);
+                    RectShape rec = new RectShape();
+                    rectangle.Tag = rec;
+                
+            tvObjects.Nodes.Add(animations); 
+            tvObjects.Nodes.Add(entities);
+        }
+
+        private void tvObjects_DoubleClick(object sender, EventArgs e)
+        {
+            TreeNode selected = ((TreeView)sender).SelectedNode;
+
+            //if (selected == regPoly)
+            //{
+            //    RegularPoly texture = new RegularPoly();
+            //    mousemode = MouseMode.StampEntity;
+            //    mouseStamp = texture;
+            //}
+
+            if (selected == rectangle)
+            {
+                mouseStamp = (Entity)selected.Tag;
+                mousemode = MouseMode.PreDrawRect;
+                return;
+            }
+
+            if (selected.Tag != null && selected.Tag is Entity)
+            {
+                mousemode = MouseMode.StampEntity;
+                mouseStamp = (Entity)selected.Tag;
+            }
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            AboutBox1 a = new AboutBox1();
+            a.ShowDialog();
+         
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void bMoveNodeUp_Click(object sender, EventArgs e)
+        {
+            TreeNode selected = WorldTree.SelectedNode;
+            if (selected == null)
+                return;
+            if (selected.Tag is Layer)
+            {
+                int index = selected.Parent.Nodes.IndexOf(selected);
+                TreeNode parent = selected.Parent;
+                selected.Parent.Nodes.Remove(selected);
+                parent.Nodes.Insert(index - 1, selected);
+                selected.TreeView.SelectedNode = selected;
+                ((Level)parent.Tag).SortNodes();
+                //((Level)selected.Parent.Tag).S
+            }
+        }
+
+        private void bMoveNodeDown_Click(object sender, EventArgs e)
+        {
+            TreeNode selected = WorldTree.SelectedNode;
+            if (selected == null)
+                return;
+            if (selected.Tag is Layer)
+            {
+                int index = selected.Parent.Nodes.IndexOf(selected);
+                TreeNode parent = selected.Parent;
+                selected.Parent.Nodes.Remove(selected);
+                parent.Nodes.Insert(index + 1, selected);
+                selected.TreeView.SelectedNode = selected;
+                ((Level)parent.Tag).SortNodes();
+                //((Level)selected.Parent.Tag).S
+            }
+
         }
 
 

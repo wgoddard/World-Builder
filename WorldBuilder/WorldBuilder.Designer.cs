@@ -78,6 +78,8 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.contextMenuWorld = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openTextures = new System.Windows.Forms.OpenFileDialog();
+            this.bDeleteUnderlap = new System.Windows.Forms.ToolStripButton();
+            this.pbMinimap = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -96,6 +98,7 @@
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbMinimap)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -122,21 +125,21 @@
             // newWorldToolStripMenuItem
             // 
             this.newWorldToolStripMenuItem.Name = "newWorldToolStripMenuItem";
-            this.newWorldToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newWorldToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.newWorldToolStripMenuItem.Text = "New World";
             this.newWorldToolStripMenuItem.Click += new System.EventHandler(this.newWorldToolStripMenuItem_Click);
             // 
             // addTexturesToolStripMenuItem
             // 
             this.addTexturesToolStripMenuItem.Name = "addTexturesToolStripMenuItem";
-            this.addTexturesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addTexturesToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.addTexturesToolStripMenuItem.Text = "Open Textures";
             this.addTexturesToolStripMenuItem.Click += new System.EventHandler(this.addTexturesToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -158,6 +161,7 @@
             this.toolStripSeparator3,
             this.bShowGrid,
             this.bGridAlign,
+            this.bDeleteUnderlap,
             this.toolStripSeparator2,
             this.bZoomIn,
             this.bResetZoom,
@@ -469,6 +473,7 @@
             // 
             // splitContainer4.Panel2
             // 
+            this.splitContainer4.Panel2.Controls.Add(this.pbMinimap);
             this.splitContainer4.Panel2.Controls.Add(this.button4);
             this.splitContainer4.Panel2.Controls.Add(this.button2);
             this.splitContainer4.Panel2.Controls.Add(this.lMouseScreen);
@@ -637,6 +642,24 @@
             this.openTextures.Filter = "Images|*.png;*.ico;*.jpg;*.jpeg;*.bmp;*.tga;*.gif";
             this.openTextures.Multiselect = true;
             // 
+            // bDeleteUnderlap
+            // 
+            this.bDeleteUnderlap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bDeleteUnderlap.Image = ((System.Drawing.Image)(resources.GetObject("bDeleteUnderlap.Image")));
+            this.bDeleteUnderlap.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bDeleteUnderlap.Name = "bDeleteUnderlap";
+            this.bDeleteUnderlap.Size = new System.Drawing.Size(23, 22);
+            this.bDeleteUnderlap.Text = "Toggle Delete Underlap";
+            this.bDeleteUnderlap.Click += new System.EventHandler(this.bDeleteUnderlap_Click);
+            // 
+            // pbMinimap
+            // 
+            this.pbMinimap.Location = new System.Drawing.Point(345, 28);
+            this.pbMinimap.Name = "pbMinimap";
+            this.pbMinimap.Size = new System.Drawing.Size(128, 128);
+            this.pbMinimap.TabIndex = 5;
+            this.pbMinimap.TabStop = false;
+            // 
             // WorldBuilder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -673,6 +696,7 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pbMinimap)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -729,6 +753,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton bResetZoom;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripButton bDeleteUnderlap;
+        private System.Windows.Forms.PictureBox pbMinimap;
     }
 }
 

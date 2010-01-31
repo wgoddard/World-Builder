@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Tao.OpenGl;
 using Tao.Platform.Windows;
 using Tao.DevIl;
+using System.Drawing.Imaging;
 
 
 namespace WorldBuilder
@@ -20,8 +21,12 @@ namespace WorldBuilder
         List<Entity> selectedEntities = new List<Entity>();
         Point screenTranslation = new Point();
         double screenZoom = 1.0f;
+
+        //Interface Settings
         bool gridAlign = false;
         bool showGrid = true;
+        bool deleteBottomTile = true;
+
 
         public WorldBuilder()
         {
@@ -205,17 +210,29 @@ namespace WorldBuilder
                     Gl.glColor3f(1, 1, 1);
                     Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
                     Gl.glBegin(Gl.GL_LINES);
+                    int GridX = l.GridX;
+                    int GridY = l.GridY;
              
-                    for (int x = 0; x < (glWorld.Width - screenTranslation.X) / screenZoom; x += l.GridX)
-                    {
-                        for (int y = 0; y < (glWorld.Height - screenTranslation.Y) / screenZoom; y += l.GridY)
-                        {
-                            Gl.glVertex2i(x,y);
-                            Gl.glVertex2i(x,y + glWorld.Height);
+                    //for (int x = 0; x < (width - screenTranslation.X) / screenZoom && x < world.GetLevel().Width; x += GridX)
+                    //{
+                    //    for (int y = 0; y < (height - screenTranslation.Y) / screenZoom && y < world.GetLevel().Height; y += GridY)
+                    //    {
+                    //        Gl.glVertex2i(x,y);
+                    //        Gl.glVertex2i(x,y + height);
 
-                            Gl.glVertex2i(x, y);
-                            Gl.glVertex2i(x + glWorld.Width, y);
-                        }
+                    //        Gl.glVertex2i(x, y);
+                    //        Gl.glVertex2i(x + width, y);
+                    //    }
+                    //}
+                    for (int x = 0; x <= world.GetLevel().Width; x += GridX)
+                    {
+                        Gl.glVertex2i(x,0);
+                        Gl.glVertex2i(x,world.GetLevel().Height);
+                    }
+                    for (int y = 0; y <= world.GetLevel().Height; y += GridY)
+                    {
+                        Gl.glVertex2i(0, y);
+                        Gl.glVertex2i(world.GetLevel().Width, y);
                     }
                     Gl.glEnd();
 
@@ -251,7 +268,7 @@ namespace WorldBuilder
                     Gl.glEnd();
                     break;
                 case MouseMode.StampEntity:
-                    Gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+                    Gl.glColor4f(1.0f, 0.5f, 0.5f, 0.5f);
                     Point mouse = AdjustPoint(mouseCurrent);
                     mouseStamp.X = mouse.X;
                     mouseStamp.Y = mouse.Y;
@@ -328,6 +345,7 @@ namespace WorldBuilder
         enum MouseMode { None, TranslateEntity, RotateEntity, ScaleEntity, TranslateScreen, SelectEntity, StampEntity, TileEntity, DrawRect, PreDrawRect };
         MouseMode mousemode = MouseMode.None;
         Entity mouseStamp = null;
+        Point mouseRectStart;
 
         bool mouseLeftDown = false;
 
@@ -399,6 +417,7 @@ namespace WorldBuilder
                     if (mousemode == MouseMode.PreDrawRect)
                     {
                         mousemode = MouseMode.DrawRect;
+                        mouseRectStart = AdjustPoint(mouseCurrent);
                     }
                     break;
                 case MouseButtons.Right:
@@ -472,7 +491,8 @@ namespace WorldBuilder
                     break;
                 case MouseMode.DrawRect:
                     Point a = AdjustPoint(mouseCurrent);
-                    Point b = AdjustPoint(mouseStart);
+                    //Point b = AdjustPoint(mouseStart);
+                    Point b = mouseRectStart;
                     if (gridAlign == true && world.GetLayer().GridX > 0 && world.GetLayer().GridY > 0)
                     {
                         b.X -= b.X % world.GetLayer().GridX;
@@ -533,6 +553,7 @@ namespace WorldBuilder
             }
             else if (mousemode == MouseMode.StampEntity)
             {
+                Layer currentLayer = world.GetLayer();
                 mouseStamp.Position = AdjustPoint(mouseCurrent);
                 if (gridAlign == true && world.GetLayer().GridX > 0 && world.GetLayer().GridY > 0)
                 {
@@ -540,8 +561,14 @@ namespace WorldBuilder
                     //mouseStamp.X -= (mouse.X - mouseStamp.Width / 2) % world.GetLayer().GridX;
                     mouseStamp.Y = mouseStamp.Y - mouseStamp.Y % world.GetLayer().GridY + mouseStamp.Height / 2;
                     // mouseStamp.Y -= (mouse.Y - mouseStamp.Height / 2) % world.GetLayer().GridY;
+                    if (deleteBottomTile)
+                    {
+                        Entity a = currentLayer.SelectEntity(new Point((int)mouseStamp.X, (int)mouseStamp.Y));
+                        if (a != null)
+                            a.Delete();
+                    }
                 }
-                Layer currentLayer = world.GetLayer();
+                
                 currentLayer.AddEntity(mouseStamp.Clone());
                 mousemode = MouseMode.StampEntity;
                 //mouseStamp.
@@ -700,6 +727,18 @@ namespace WorldBuilder
                         entity.FlipVertical = !entity.FlipVertical;
                     }
                     break;
+                case Keys.F:
+                    foreach (Entity entity in selectedEntities)
+                    {
+                        entity.Rotation -= 90;
+                    }
+                    break;
+                case Keys.G:
+                    foreach (Entity entity in selectedEntities)
+                    {
+                        entity.Rotation += 90;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -760,24 +799,53 @@ namespace WorldBuilder
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Texture t = new Texture(new Image("a"));
-            foreach (System.Reflection.PropertyInfo o in t.GetType().GetProperties())
+            int width = glWorld.Width;
+            int height = glWorld.Height;
+
+
+
+
+            Gl.glMatrixMode(Gl.GL_PROJECTION);
+            Gl.glLoadIdentity();
+            Gl.glOrtho(0, world.GetLevel().Width, 0, world.GetLevel().Height, 0, 1);
+            Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            Gl.glLoadIdentity();
+            //Gl.glTranslated((double)(screenTranslation.X), (double)(screenTranslation.Y), 0);
+            //Gl.glScaled(screenZoom, screenZoom, 0);
+
+            Gl.glViewport(0, 0, 128, 128);
+
+            Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
+
+            try
             {
-                try
-                {
-                    MessageBox.Show(o.GetValue(t, null).ToString());
-                }
-                catch (Exception)
-                {
-                }
+                Layer l = world.GetLayer();
+                world.GetLevel().Draw();
             }
+            catch (Exception)
+            { }
+
+
+
+            Gl.glColor3f(1.0f, 1.0f, 1.0f);
+            Gl.glFlush();
+
+            Bitmap b = new Bitmap(128, 128, PixelFormat.Format32bppArgb);
+            BitmapData bd = b.LockBits(new System.Drawing.Rectangle(0, 0, 128, 128),
+            ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+            Gl.glReadPixels(0, 0, 128, 128, Gl.GL_BGRA_EXT, Gl.GL_UNSIGNED_BYTE, bd.Scan0);
+
+            b.UnlockBits(bd);
+            b.RotateFlip(RotateFlipType.RotateNoneFlipY);
+
+            pbMinimap.Image = b;
+
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            RegularPoly texture = new RegularPoly();
-            mousemode = MouseMode.StampEntity;
-            mouseStamp = texture;
+
+
         }
 
 
@@ -871,7 +939,22 @@ namespace WorldBuilder
                 ((Level)parent.Tag).SortNodes();
                 //((Level)selected.Parent.Tag).S
             }
+             if (selected.Tag is Entity)
+            {
+                int index = selected.Parent.Nodes.IndexOf(selected);
+                TreeNode parent = selected.Parent;
+                selected.Parent.Nodes.Remove(selected);
+                parent.Nodes.Insert(index + 1, selected);
+                selected.TreeView.SelectedNode = selected;
+                ((Layer)parent.Tag).SortNodes();
+                //((Level)selected.Parent.Tag).S
+           } 
 
+        }
+
+        private void bDeleteUnderlap_Click(object sender, EventArgs e)
+        {
+            deleteBottomTile = !deleteBottomTile;
         }
 
 

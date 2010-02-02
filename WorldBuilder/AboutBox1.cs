@@ -18,7 +18,7 @@ namespace WorldBuilder
             this.labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
             this.labelCopyright.Text = AssemblyCopyright;
             this.labelCompanyName.Text = AssemblyCompany;
-            this.textBoxDescription.Text = AssemblyDescription;
+            this.textBoxDescription.Text = AssemblyDescription + "\r\n\r\nSilk icon set 1.3\n________________________________________\nMark James\nhttp://www.famfamfam.com/lab/icons/silk/";
         }
 
         #region Assembly Attribute Accessors

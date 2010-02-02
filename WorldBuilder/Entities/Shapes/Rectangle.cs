@@ -143,8 +143,8 @@ namespace WorldBuilder
 
         public override void AdjustToPoints(System.Drawing.Point p1, System.Drawing.Point p2)
         {
-            X = (p1.X + p2.X) / 2;
-            Y = (p1.Y + p2.Y) / 2;
+            X = (p1.X + p2.X + 0.5f) / 2;
+            Y = (p1.Y + p2.Y + 0.5f) / 2;
             m_w = Math.Abs(p1.X - p2.X);
             m_h = Math.Abs(p1.Y - p2.Y);
         }

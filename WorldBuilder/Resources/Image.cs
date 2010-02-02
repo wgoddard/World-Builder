@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Tao.DevIl;
+using Tao.OpenGl;
 
 namespace WorldBuilder
 {
@@ -23,6 +24,8 @@ namespace WorldBuilder
                 textureID = Ilut.ilutGLLoadImage(filename);
 
                 //Gl.glBindTexture(Gl.GL_TEXTURE_2D, textureID);
+                Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
+                Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_NEAREST);
 
                 width = Il.ilGetInteger(Il.IL_IMAGE_WIDTH);
                 height = Il.ilGetInteger(Il.IL_IMAGE_HEIGHT);

@@ -33,18 +33,23 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newWorldToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openWorldToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveWorldToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.addTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.bNewWorld = new System.Windows.Forms.ToolStripButton();
+            this.bOpenWorld = new System.Windows.Forms.ToolStripButton();
+            this.bSave = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.bOpenTextures = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.bShowGrid = new System.Windows.Forms.ToolStripButton();
             this.bGridAlign = new System.Windows.Forms.ToolStripButton();
+            this.bDeleteUnderlap = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.bZoomIn = new System.Windows.Forms.ToolStripButton();
             this.bResetZoom = new System.Windows.Forms.ToolStripButton();
@@ -63,12 +68,11 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.glWorld = new Tao.Platform.Windows.SimpleOpenGlControl();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.splitContainer5 = new System.Windows.Forms.SplitContainer();
             this.lMouseScreen = new System.Windows.Forms.Label();
             this.lMouse = new System.Windows.Forms.Label();
+            this.pbMinimap = new System.Windows.Forms.PictureBox();
             this.lLayer = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.listTextures = new System.Windows.Forms.ListView();
@@ -78,8 +82,6 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.contextMenuWorld = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openTextures = new System.Windows.Forms.OpenFileDialog();
-            this.bDeleteUnderlap = new System.Windows.Forms.ToolStripButton();
-            this.pbMinimap = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -95,10 +97,13 @@
             this.splitContainer4.Panel1.SuspendLayout();
             this.splitContainer4.Panel2.SuspendLayout();
             this.splitContainer4.SuspendLayout();
+            this.splitContainer5.Panel1.SuspendLayout();
+            this.splitContainer5.Panel2.SuspendLayout();
+            this.splitContainer5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbMinimap)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbMinimap)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -116,7 +121,11 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newWorldToolStripMenuItem,
+            this.openWorldToolStripMenuItem,
+            this.saveWorldToolStripMenuItem,
+            this.toolStripSeparator5,
             this.addTexturesToolStripMenuItem,
+            this.toolStripSeparator6,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -126,8 +135,25 @@
             // 
             this.newWorldToolStripMenuItem.Name = "newWorldToolStripMenuItem";
             this.newWorldToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
-            this.newWorldToolStripMenuItem.Text = "New World";
+            this.newWorldToolStripMenuItem.Text = "New";
             this.newWorldToolStripMenuItem.Click += new System.EventHandler(this.newWorldToolStripMenuItem_Click);
+            // 
+            // openWorldToolStripMenuItem
+            // 
+            this.openWorldToolStripMenuItem.Name = "openWorldToolStripMenuItem";
+            this.openWorldToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.openWorldToolStripMenuItem.Text = "Open";
+            // 
+            // saveWorldToolStripMenuItem
+            // 
+            this.saveWorldToolStripMenuItem.Name = "saveWorldToolStripMenuItem";
+            this.saveWorldToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.saveWorldToolStripMenuItem.Text = "Save";
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(147, 6);
             // 
             // addTexturesToolStripMenuItem
             // 
@@ -135,6 +161,11 @@
             this.addTexturesToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.addTexturesToolStripMenuItem.Text = "Open Textures";
             this.addTexturesToolStripMenuItem.Click += new System.EventHandler(this.addTexturesToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(147, 6);
             // 
             // exitToolStripMenuItem
             // 
@@ -153,9 +184,9 @@
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButton1,
-            this.toolStripButton6,
-            this.toolStripButton3,
+            this.bNewWorld,
+            this.bOpenWorld,
+            this.bSave,
             this.toolStripSeparator1,
             this.bOpenTextures,
             this.toolStripSeparator3,
@@ -174,32 +205,36 @@
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // toolStripButton1
+            // bNewWorld
             // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton1.Text = "toolStripButton1";
+            this.bNewWorld.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bNewWorld.Image = ((System.Drawing.Image)(resources.GetObject("bNewWorld.Image")));
+            this.bNewWorld.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bNewWorld.Name = "bNewWorld";
+            this.bNewWorld.Size = new System.Drawing.Size(23, 22);
+            this.bNewWorld.Text = "New World";
+            this.bNewWorld.Click += new System.EventHandler(this.bNewWorld_Click);
             // 
-            // toolStripButton6
+            // bOpenWorld
             // 
-            this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
-            this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton6.Name = "toolStripButton6";
-            this.toolStripButton6.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton6.Text = "toolStripButton6";
+            this.bOpenWorld.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bOpenWorld.Image = ((System.Drawing.Image)(resources.GetObject("bOpenWorld.Image")));
+            this.bOpenWorld.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bOpenWorld.Name = "bOpenWorld";
+            this.bOpenWorld.Size = new System.Drawing.Size(23, 22);
+            this.bOpenWorld.Text = "Open";
+            this.bOpenWorld.ToolTipText = "Open";
+            this.bOpenWorld.Click += new System.EventHandler(this.bOpenWorld_Click);
             // 
-            // toolStripButton3
+            // bSave
             // 
-            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
-            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton3.Text = "toolStripButton3";
+            this.bSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bSave.Image = ((System.Drawing.Image)(resources.GetObject("bSave.Image")));
+            this.bSave.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bSave.Name = "bSave";
+            this.bSave.Size = new System.Drawing.Size(23, 22);
+            this.bSave.Text = "Save";
+            this.bSave.Click += new System.EventHandler(this.bSave_Click);
             // 
             // toolStripSeparator1
             // 
@@ -241,6 +276,16 @@
             this.bGridAlign.Text = "Snap To Grid (Bottom Left)";
             this.bGridAlign.Click += new System.EventHandler(this.toolStripButton9_Click);
             // 
+            // bDeleteUnderlap
+            // 
+            this.bDeleteUnderlap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bDeleteUnderlap.Image = ((System.Drawing.Image)(resources.GetObject("bDeleteUnderlap.Image")));
+            this.bDeleteUnderlap.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bDeleteUnderlap.Name = "bDeleteUnderlap";
+            this.bDeleteUnderlap.Size = new System.Drawing.Size(23, 22);
+            this.bDeleteUnderlap.Text = "Toggle Delete Underlap";
+            this.bDeleteUnderlap.Click += new System.EventHandler(this.bDeleteUnderlap_Click);
+            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
@@ -263,6 +308,7 @@
             this.bResetZoom.Name = "bResetZoom";
             this.bResetZoom.Size = new System.Drawing.Size(23, 22);
             this.bResetZoom.Text = "Reset Zoom";
+            this.bResetZoom.Click += new System.EventHandler(this.bResetZoom_Click);
             // 
             // bZoomOut
             // 
@@ -473,13 +519,8 @@
             // 
             // splitContainer4.Panel2
             // 
-            this.splitContainer4.Panel2.Controls.Add(this.pbMinimap);
-            this.splitContainer4.Panel2.Controls.Add(this.button4);
-            this.splitContainer4.Panel2.Controls.Add(this.button2);
-            this.splitContainer4.Panel2.Controls.Add(this.lMouseScreen);
-            this.splitContainer4.Panel2.Controls.Add(this.lMouse);
+            this.splitContainer4.Panel2.Controls.Add(this.splitContainer5);
             this.splitContainer4.Panel2.Controls.Add(this.lLayer);
-            this.splitContainer4.Panel2.Controls.Add(this.button1);
             this.splitContainer4.Size = new System.Drawing.Size(512, 681);
             this.splitContainer4.SplitterDistance = 487;
             this.splitContainer4.TabIndex = 0;
@@ -507,41 +548,52 @@
             this.glWorld.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glWorld_MouseUp);
             this.glWorld.KeyDown += new System.Windows.Forms.KeyEventHandler(this.glWorld_KeyDown);
             // 
-            // button4
+            // splitContainer5
             // 
-            this.button4.Location = new System.Drawing.Point(26, 56);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 4;
-            this.button4.Text = "button4";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.splitContainer5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer5.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.splitContainer5.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer5.Name = "splitContainer5";
             // 
-            // button2
+            // splitContainer5.Panel1
             // 
-            this.button2.Location = new System.Drawing.Point(234, 28);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 3;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.splitContainer5.Panel1.Controls.Add(this.lMouseScreen);
+            this.splitContainer5.Panel1.Controls.Add(this.lMouse);
+            // 
+            // splitContainer5.Panel2
+            // 
+            this.splitContainer5.Panel2.Controls.Add(this.pbMinimap);
+            this.splitContainer5.Size = new System.Drawing.Size(512, 190);
+            this.splitContainer5.SplitterDistance = 272;
+            this.splitContainer5.TabIndex = 4;
             // 
             // lMouseScreen
             // 
             this.lMouseScreen.AutoSize = true;
-            this.lMouseScreen.Location = new System.Drawing.Point(342, 165);
+            this.lMouseScreen.Location = new System.Drawing.Point(146, 168);
             this.lMouseScreen.Name = "lMouseScreen";
             this.lMouseScreen.Size = new System.Drawing.Size(0, 13);
-            this.lMouseScreen.TabIndex = 3;
+            this.lMouseScreen.TabIndex = 10;
             // 
             // lMouse
             // 
             this.lMouse.AutoSize = true;
-            this.lMouse.Location = new System.Drawing.Point(138, 168);
+            this.lMouse.Location = new System.Drawing.Point(3, 168);
             this.lMouse.Name = "lMouse";
             this.lMouse.Size = new System.Drawing.Size(0, 13);
-            this.lMouse.TabIndex = 2;
+            this.lMouse.TabIndex = 9;
+            // 
+            // pbMinimap
+            // 
+            this.pbMinimap.BackColor = System.Drawing.Color.Black;
+            this.pbMinimap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbMinimap.Location = new System.Drawing.Point(0, 0);
+            this.pbMinimap.Name = "pbMinimap";
+            this.pbMinimap.Size = new System.Drawing.Size(236, 190);
+            this.pbMinimap.TabIndex = 9;
+            this.pbMinimap.TabStop = false;
+            this.pbMinimap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbMinimap_MouseMove);
+            this.pbMinimap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbMinimap_MouseDown);
             // 
             // lLayer
             // 
@@ -550,16 +602,6 @@
             this.lLayer.Name = "lLayer";
             this.lLayer.Size = new System.Drawing.Size(0, 13);
             this.lLayer.TabIndex = 1;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(109, 38);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(76, 27);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Reset Zoom";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // tabControl1
             // 
@@ -642,24 +684,6 @@
             this.openTextures.Filter = "Images|*.png;*.ico;*.jpg;*.jpeg;*.bmp;*.tga;*.gif";
             this.openTextures.Multiselect = true;
             // 
-            // bDeleteUnderlap
-            // 
-            this.bDeleteUnderlap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.bDeleteUnderlap.Image = ((System.Drawing.Image)(resources.GetObject("bDeleteUnderlap.Image")));
-            this.bDeleteUnderlap.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.bDeleteUnderlap.Name = "bDeleteUnderlap";
-            this.bDeleteUnderlap.Size = new System.Drawing.Size(23, 22);
-            this.bDeleteUnderlap.Text = "Toggle Delete Underlap";
-            this.bDeleteUnderlap.Click += new System.EventHandler(this.bDeleteUnderlap_Click);
-            // 
-            // pbMinimap
-            // 
-            this.pbMinimap.Location = new System.Drawing.Point(345, 28);
-            this.pbMinimap.Name = "pbMinimap";
-            this.pbMinimap.Size = new System.Drawing.Size(128, 128);
-            this.pbMinimap.TabIndex = 5;
-            this.pbMinimap.TabStop = false;
-            // 
             // WorldBuilder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -693,10 +717,14 @@
             this.splitContainer4.Panel2.ResumeLayout(false);
             this.splitContainer4.Panel2.PerformLayout();
             this.splitContainer4.ResumeLayout(false);
+            this.splitContainer5.Panel1.ResumeLayout(false);
+            this.splitContainer5.Panel1.PerformLayout();
+            this.splitContainer5.Panel2.ResumeLayout(false);
+            this.splitContainer5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pbMinimap)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbMinimap)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -713,7 +741,7 @@
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.ToolStrip toolStrip2;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton bNewWorld;
         private System.Windows.Forms.TreeView WorldTree;
         private System.Windows.Forms.SplitContainer splitContainer4;
         private Tao.Platform.Windows.SimpleOpenGlControl glWorld;
@@ -727,21 +755,16 @@
         private System.Windows.Forms.ListView listTextures;
         private System.Windows.Forms.ImageList textureList;
         private System.Windows.Forms.OpenFileDialog openTextures;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label lMouse;
         private System.Windows.Forms.Label lLayer;
-        private System.Windows.Forms.Label lMouseScreen;
-        private System.Windows.Forms.ToolStripButton toolStripButton3;
+        private System.Windows.Forms.ToolStripButton bSave;
         private System.Windows.Forms.ToolStripButton bMoveNodeUp;
         private System.Windows.Forms.ToolStripButton bStartGame;
-        private System.Windows.Forms.ToolStripButton toolStripButton6;
+        private System.Windows.Forms.ToolStripButton bOpenWorld;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton bShowGrid;
         private System.Windows.Forms.ToolStripButton bGridAlign;
         private System.Windows.Forms.ToolStripButton bMoveNodeDown;
         private System.Windows.Forms.ToolStripButton bZoomIn;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TreeView tvObjects;
         private System.Windows.Forms.ToolStripButton bZoomOut;
         private System.Windows.Forms.ToolStripButton bOpenTextures;
@@ -754,7 +777,14 @@
         private System.Windows.Forms.ToolStripButton bResetZoom;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripButton bDeleteUnderlap;
+        private System.Windows.Forms.ToolStripMenuItem saveWorldToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openWorldToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.SplitContainer splitContainer5;
         private System.Windows.Forms.PictureBox pbMinimap;
+        private System.Windows.Forms.Label lMouseScreen;
+        private System.Windows.Forms.Label lMouse;
     }
 }
 

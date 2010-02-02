@@ -45,14 +45,19 @@ namespace WorldBuilder
         void WorldBuilder_MouseWheel(object sender, MouseEventArgs e)
         {
 
-            double sz = screenZoom;
+            //double sz = screenZoom;
+
+            double x = screenTranslation.X / screenZoom;
+            double y = screenTranslation.Y / screenZoom;
 
             screenZoom += 0.001 * e.Delta;
             if (screenZoom < 0.1)
                 screenZoom = 0.01;
 
-            //screenTranslation.X += (int)((screenZoom - sz) * glWorld.Width/2);
-            //screenTranslation.Y += (int)((screenZoom - sz) * glWorld.Height/2);
+            screenTranslation.X = (int)(x * screenZoom);
+            screenTranslation.Y = (int)(y * screenZoom);
+
+
 
             glWorld.Draw();
         }
@@ -65,7 +70,6 @@ namespace WorldBuilder
         private void glWorld_Load(object sender, EventArgs e)
         {
             Gl.glClearColor(0.0f, 0.0f, 0.0f,0.0f);
-            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
             Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_ONE_MINUS_SRC_ALPHA);
             Gl.glDisable(Gl.GL_DEPTH_TEST);
             Gl.glEnable(Gl.GL_BLEND);
@@ -164,22 +168,10 @@ namespace WorldBuilder
             //MessageBox.Show(sender.ToString());
 
             Texture texture = new Texture((Image)((ListView)sender).SelectedItems[0].Tag);
-            //Point pos = new Point();
-            //pos.X -= screenTranslation.X;
-            //pos.Y -= screenTranslation.Y;
-            //texture.Position = pos;
-            //layer.AddEntity(texture);
+
             mousemode = MouseMode.StampEntity;
             mouseStamp = texture;
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            //MessageBox.Show(world.GetLevel().Name);
-
-            screenZoom = 1;
-            glWorld.Draw();
-
+            selectedEntities.Clear();
         }
 
         private void glWorld_Paint(object sender, PaintEventArgs e)
@@ -193,6 +185,7 @@ namespace WorldBuilder
             Gl.glMatrixMode(Gl.GL_PROJECTION);
             Gl.glLoadIdentity();
             Gl.glOrtho(0, width, 0, height, 0, 1);
+            //Gl.glOrtho(-width / 2, width / 2, -height / 2, height / 2, 0, 1);
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
             Gl.glLoadIdentity();
             Gl.glTranslated((double)(screenTranslation.X), (double)(screenTranslation.Y), 0);
@@ -204,14 +197,28 @@ namespace WorldBuilder
 
             try
             {
-                Layer l = world.GetLayer();
-                if (showGrid && l.GridX > 0 && l.GridY > 0)
+                Level level = world.GetLevel();
+
+                Gl.glColor3f(1, 1, 1);
+                Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
+
+                Gl.glBegin(Gl.GL_LINE_LOOP);
+
+                Gl.glVertex2i(0, 0);
+                Gl.glVertex2i(level.Width, 0);
+                Gl.glVertex2i(level.Width, level.Height);
+                Gl.glVertex2i(0, level.Height);
+
+                Gl.glEnd();
+
+
+
+                Layer layer = world.GetLayer();
+                if (showGrid && layer.GridX > 0 && layer.GridY > 0)
                 {
-                    Gl.glColor3f(1, 1, 1);
-                    Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
                     Gl.glBegin(Gl.GL_LINES);
-                    int GridX = l.GridX;
-                    int GridY = l.GridY;
+                    int GridX = layer.GridX;
+                    int GridY = layer.GridY;
              
                     //for (int x = 0; x < (width - screenTranslation.X) / screenZoom && x < world.GetLevel().Width; x += GridX)
                     //{
@@ -224,20 +231,20 @@ namespace WorldBuilder
                     //        Gl.glVertex2i(x + width, y);
                     //    }
                     //}
-                    for (int x = 0; x <= world.GetLevel().Width; x += GridX)
+                    for (int x = 0; x <= level.Width; x += GridX)
                     {
                         Gl.glVertex2i(x,0);
-                        Gl.glVertex2i(x,world.GetLevel().Height);
+                        Gl.glVertex2i(x,level.Height);
                     }
-                    for (int y = 0; y <= world.GetLevel().Height; y += GridY)
+                    for (int y = 0; y <= level.Height; y += GridY)
                     {
                         Gl.glVertex2i(0, y);
-                        Gl.glVertex2i(world.GetLevel().Width, y);
+                        Gl.glVertex2i(level.Width, y);
                     }
                     Gl.glEnd();
 
                 }
-                world.GetLevel().Draw();
+                level.Draw();
             }
             catch(Exception)
             {}
@@ -447,8 +454,8 @@ namespace WorldBuilder
             mouseCurrent.Y = glWorld.Height - mouseCurrent.Y;
 
             Point mouseAdjust = AdjustPoint(mouseCurrent);
-            lMouse.Text = "World Position (" + mouseAdjust.X.ToString() + ", " + mouseAdjust.Y.ToString() + ")";
-            lMouseScreen.Text = "Mouse Position (" + mouseCurrent.X.ToString() + ", " + mouseCurrent.Y.ToString() + ")";
+            lMouse.Text = "World (" + mouseAdjust.X.ToString() + ", " + mouseAdjust.Y.ToString() + ")";
+            lMouseScreen.Text = "Mouse (" + mouseCurrent.X.ToString() + ", " + mouseCurrent.Y.ToString() + ")";
             //mouseCurrent.X -= screenTranslation.X;
             float tx, ty = 0;
             switch (mousemode)
@@ -622,6 +629,7 @@ namespace WorldBuilder
                 mousemode = MouseMode.None;
                 mouseStamp = null;
             }
+            UpdateMiniMap();
 
             //MessageBox.Show("There are now " + selectedEntities.Count.ToString() + " entities selected and mouse type is " + mousemode.ToString());
         }
@@ -678,12 +686,11 @@ namespace WorldBuilder
                         //Move SourceNode above DestNode
                     }
 
-                    
-
                 }
             }
 
             glWorld.Draw();
+            UpdateMiniMap();
 
         }
 
@@ -702,6 +709,26 @@ namespace WorldBuilder
         {
             switch (e.KeyCode)
             {
+                case Keys.A:
+                    if (e.Control == true)
+                    {
+                        selectedEntities = world.GetLayer().SelectAll();
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            glWorld.Draw();
+
+        }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+
+            bool handled = false;
+
+            switch (keyData)
+            {
                 case Keys.Delete:
                     foreach (Entity entity in selectedEntities)
                     {
@@ -709,23 +736,22 @@ namespace WorldBuilder
                     }
                     selectedEntities.Clear();
                     break;
-                case Keys.A:
-                    if (e.Control == true)
-                    {
-                        selectedEntities = world.GetLayer().SelectAll();
-                    }
-                    break;
+
                 case Keys.H:
                     foreach (Entity entity in selectedEntities)
                     {
                         entity.FlipHorizontal = !entity.FlipHorizontal;
                     }
+                    if (mouseStamp != null)
+                        mouseStamp.FlipHorizontal = !mouseStamp.FlipHorizontal;
                     break;
                 case Keys.V:
                     foreach (Entity entity in selectedEntities)
                     {
                         entity.FlipVertical = !entity.FlipVertical;
                     }
+                    if (mouseStamp != null)
+                        mouseStamp.FlipVertical = !mouseStamp.FlipVertical;
                     break;
                 case Keys.F:
                     foreach (Entity entity in selectedEntities)
@@ -739,27 +765,6 @@ namespace WorldBuilder
                         entity.Rotation += 90;
                     }
                     break;
-                default:
-                    break;
-            }
-
-            glWorld.Draw();
-
-        }
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-
-            //Returns true if the character was processed by the control;
-
-            //otherwise, false.
-
-            bool handled = false;
-
-
-
-            switch (keyData)
-            {
-
                 case Keys.Up:
                     foreach (Entity entity in selectedEntities)
                     {
@@ -797,59 +802,6 @@ namespace WorldBuilder
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            int width = glWorld.Width;
-            int height = glWorld.Height;
-
-
-
-
-            Gl.glMatrixMode(Gl.GL_PROJECTION);
-            Gl.glLoadIdentity();
-            Gl.glOrtho(0, world.GetLevel().Width, 0, world.GetLevel().Height, 0, 1);
-            Gl.glMatrixMode(Gl.GL_MODELVIEW);
-            Gl.glLoadIdentity();
-            //Gl.glTranslated((double)(screenTranslation.X), (double)(screenTranslation.Y), 0);
-            //Gl.glScaled(screenZoom, screenZoom, 0);
-
-            Gl.glViewport(0, 0, 128, 128);
-
-            Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
-
-            try
-            {
-                Layer l = world.GetLayer();
-                world.GetLevel().Draw();
-            }
-            catch (Exception)
-            { }
-
-
-
-            Gl.glColor3f(1.0f, 1.0f, 1.0f);
-            Gl.glFlush();
-
-            Bitmap b = new Bitmap(128, 128, PixelFormat.Format32bppArgb);
-            BitmapData bd = b.LockBits(new System.Drawing.Rectangle(0, 0, 128, 128),
-            ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-            Gl.glReadPixels(0, 0, 128, 128, Gl.GL_BGRA_EXT, Gl.GL_UNSIGNED_BYTE, bd.Scan0);
-
-            b.UnlockBits(bd);
-            b.RotateFlip(RotateFlipType.RotateNoneFlipY);
-
-            pbMinimap.Image = b;
-
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-
-
-        }
-
-
-
         TreeNode shapes = new TreeNode("Shapes");
             TreeNode regPoly = new TreeNode("Regular Polygon");
             TreeNode rectangle = new TreeNode("Rectangle");
@@ -885,6 +837,7 @@ namespace WorldBuilder
             {
                 mouseStamp = (Entity)selected.Tag;
                 mousemode = MouseMode.PreDrawRect;
+                selectedEntities.Clear();
                 return;
             }
 
@@ -892,6 +845,7 @@ namespace WorldBuilder
             {
                 mousemode = MouseMode.StampEntity;
                 mouseStamp = (Entity)selected.Tag;
+                selectedEntities.Clear();
             }
         }
 
@@ -922,6 +876,16 @@ namespace WorldBuilder
                 ((Level)parent.Tag).SortNodes();
                 //((Level)selected.Parent.Tag).S
             }
+            if (selected.Tag is Entity)
+            {
+                int index = selected.Parent.Nodes.IndexOf(selected);
+                TreeNode parent = selected.Parent;
+                selected.Parent.Nodes.Remove(selected);
+                parent.Nodes.Insert(index - 1, selected);
+                selected.TreeView.SelectedNode = selected;
+                ((Layer)parent.Tag).SortNodes();
+                //((Level)selected.Parent.Tag).S
+            } 
         }
 
         private void bMoveNodeDown_Click(object sender, EventArgs e)
@@ -955,6 +919,109 @@ namespace WorldBuilder
         private void bDeleteUnderlap_Click(object sender, EventArgs e)
         {
             deleteBottomTile = !deleteBottomTile;
+        }
+
+        private void pbMinimap_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                TranslateToMiniMap(e.Location);
+            }
+        }
+        private void pbMinimap_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                TranslateToMiniMap(e.Location);
+            }
+        }
+
+        void TranslateToMiniMap(Point p)
+        {
+            if (world == null || world.GetLevel() == null) return;
+            p.Y = pbMinimap.Height - p.Y;
+            screenTranslation.X = (int)(-(float)p.X / (float)pbMinimap.Width * (float)world.GetLevel().Width * screenZoom + (glWorld.Width / 2));
+            screenTranslation.Y = (int)(-(float)p.Y / (float)pbMinimap.Height * (float)world.GetLevel().Height * screenZoom + (glWorld.Height / 2));
+
+            lMouse.Text = "World (" + ((int)(screenTranslation.X / screenZoom)).ToString() + ", " + ((int)(screenTranslation.Y / screenZoom)).ToString() + ")";
+
+            UpdateMiniMap();
+            glWorld.Draw();
+        }
+
+        void UpdateMiniMap()
+        {
+            int width = glWorld.Width;
+            int height = glWorld.Height;
+
+            int wWidth = world.GetLevel().Width;
+            int wHeight = world.GetLevel().Height;
+
+            Gl.glMatrixMode(Gl.GL_PROJECTION);
+            Gl.glLoadIdentity();
+            Gl.glOrtho(0, wWidth, 0, wHeight, 0, 1);
+            //Gl.glOrtho(-wWidth / 2, wWidth / 2, -wHeight / 2, wHeight / 2, 0, 1);
+            Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            Gl.glLoadIdentity();
+            //Gl.glTranslated((double)(screenTranslation.X), (double)(screenTranslation.Y), 0);
+            //Gl.glScaled(screenZoom, screenZoom, 0);
+
+            Gl.glViewport(0, 0, pbMinimap.Width, pbMinimap.Height);
+
+            Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
+
+            try
+            {
+                Layer l = world.GetLayer();
+                world.GetLevel().Draw();
+                Gl.glColor3f(1.0f, 1.0f, 1.0f);
+                Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
+                Gl.glBegin(Gl.GL_LINE_LOOP);
+                    Gl.glVertex2d(-screenTranslation.X / screenZoom, -screenTranslation.Y / screenZoom);
+                    Gl.glVertex2d(-screenTranslation.X / screenZoom + glWorld.Width / screenZoom, -screenTranslation.Y / screenZoom);
+                    Gl.glVertex2d(-screenTranslation.X / screenZoom + glWorld.Width / screenZoom, -screenTranslation.Y / screenZoom + glWorld.Height / screenZoom);
+                    Gl.glVertex2d(-screenTranslation.X / screenZoom, -screenTranslation.Y / screenZoom + glWorld.Height / screenZoom);
+                Gl.glEnd();
+            }
+            catch (Exception)
+            { }
+
+
+
+            Gl.glColor3f(1.0f, 1.0f, 1.0f);
+            Gl.glFlush();
+
+            Bitmap b = new Bitmap(pbMinimap.Width, pbMinimap.Height, PixelFormat.Format32bppArgb);
+            BitmapData bd = b.LockBits(new System.Drawing.Rectangle(0, 0, pbMinimap.Width, pbMinimap.Height),
+            ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+            Gl.glReadPixels(0, 0, pbMinimap.Width, pbMinimap.Height, Gl.GL_BGRA_EXT, Gl.GL_UNSIGNED_BYTE, bd.Scan0);
+
+            b.UnlockBits(bd);
+            b.RotateFlip(RotateFlipType.RotateNoneFlipY);
+
+            pbMinimap.Image = b;
+        }
+
+        private void bNewWorld_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void bOpenWorld_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void bSave_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void bResetZoom_Click(object sender, EventArgs e)
+        {
+
+            screenZoom = 1;
+            glWorld.Draw();
         }
 
 

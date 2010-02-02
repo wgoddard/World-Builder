@@ -38,6 +38,17 @@ namespace WorldBuilder
             return null;
         }
 
+        public void Remove(string filename)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(Image i)
+        {
+            return images.Remove(i);
+        }
+
+
     }
 
 }

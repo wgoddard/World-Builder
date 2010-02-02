@@ -67,11 +67,9 @@
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
-            this.glWorld = new Tao.Platform.Windows.SimpleOpenGlControl();
             this.splitContainer5 = new System.Windows.Forms.SplitContainer();
             this.lMouseScreen = new System.Windows.Forms.Label();
             this.lMouse = new System.Windows.Forms.Label();
-            this.pbMinimap = new System.Windows.Forms.PictureBox();
             this.lLayer = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -82,6 +80,9 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.contextMenuWorld = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openTextures = new System.Windows.Forms.OpenFileDialog();
+            this.glWorld = new Tao.Platform.Windows.SuperOpenGlControl();
+            this.glMiniMap = new Tao.Platform.Windows.SuperOpenGlControl();
+            this.button1 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -100,7 +101,6 @@
             this.splitContainer5.Panel1.SuspendLayout();
             this.splitContainer5.Panel2.SuspendLayout();
             this.splitContainer5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbMinimap)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -525,29 +525,6 @@
             this.splitContainer4.SplitterDistance = 487;
             this.splitContainer4.TabIndex = 0;
             // 
-            // glWorld
-            // 
-            this.glWorld.AccumBits = ((byte)(0));
-            this.glWorld.AutoCheckErrors = false;
-            this.glWorld.AutoFinish = false;
-            this.glWorld.AutoMakeCurrent = true;
-            this.glWorld.AutoSwapBuffers = true;
-            this.glWorld.BackColor = System.Drawing.Color.Black;
-            this.glWorld.ColorBits = ((byte)(32));
-            this.glWorld.DepthBits = ((byte)(16));
-            this.glWorld.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.glWorld.Location = new System.Drawing.Point(0, 0);
-            this.glWorld.Name = "glWorld";
-            this.glWorld.Size = new System.Drawing.Size(512, 487);
-            this.glWorld.StencilBits = ((byte)(0));
-            this.glWorld.TabIndex = 0;
-            this.glWorld.Load += new System.EventHandler(this.glWorld_Load);
-            this.glWorld.Paint += new System.Windows.Forms.PaintEventHandler(this.glWorld_Paint);
-            this.glWorld.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glWorld_MouseMove);
-            this.glWorld.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glWorld_MouseDown);
-            this.glWorld.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glWorld_MouseUp);
-            this.glWorld.KeyDown += new System.Windows.Forms.KeyEventHandler(this.glWorld_KeyDown);
-            // 
             // splitContainer5
             // 
             this.splitContainer5.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -557,12 +534,13 @@
             // 
             // splitContainer5.Panel1
             // 
+            this.splitContainer5.Panel1.Controls.Add(this.button1);
             this.splitContainer5.Panel1.Controls.Add(this.lMouseScreen);
             this.splitContainer5.Panel1.Controls.Add(this.lMouse);
             // 
             // splitContainer5.Panel2
             // 
-            this.splitContainer5.Panel2.Controls.Add(this.pbMinimap);
+            this.splitContainer5.Panel2.Controls.Add(this.glMiniMap);
             this.splitContainer5.Size = new System.Drawing.Size(512, 190);
             this.splitContainer5.SplitterDistance = 272;
             this.splitContainer5.TabIndex = 4;
@@ -582,18 +560,6 @@
             this.lMouse.Name = "lMouse";
             this.lMouse.Size = new System.Drawing.Size(0, 13);
             this.lMouse.TabIndex = 9;
-            // 
-            // pbMinimap
-            // 
-            this.pbMinimap.BackColor = System.Drawing.Color.Black;
-            this.pbMinimap.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbMinimap.Location = new System.Drawing.Point(0, 0);
-            this.pbMinimap.Name = "pbMinimap";
-            this.pbMinimap.Size = new System.Drawing.Size(236, 190);
-            this.pbMinimap.TabIndex = 9;
-            this.pbMinimap.TabStop = false;
-            this.pbMinimap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbMinimap_MouseMove);
-            this.pbMinimap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbMinimap_MouseDown);
             // 
             // lLayer
             // 
@@ -684,6 +650,59 @@
             this.openTextures.Filter = "Images|*.png;*.ico;*.jpg;*.jpeg;*.bmp;*.tga;*.gif";
             this.openTextures.Multiselect = true;
             // 
+            // glWorld
+            // 
+            this.glWorld.AccumBits = ((byte)(0));
+            this.glWorld.AutoCheckErrors = false;
+            this.glWorld.AutoFinish = false;
+            this.glWorld.AutoMakeCurrent = true;
+            this.glWorld.AutoSwapBuffers = true;
+            this.glWorld.BackColor = System.Drawing.Color.Black;
+            this.glWorld.ColorBits = ((byte)(32));
+            this.glWorld.DepthBits = ((byte)(16));
+            this.glWorld.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.glWorld.Location = new System.Drawing.Point(0, 0);
+            this.glWorld.Name = "glWorld";
+            this.glWorld.Size = new System.Drawing.Size(512, 487);
+            this.glWorld.StencilBits = ((byte)(0));
+            this.glWorld.TabIndex = 0;
+            this.glWorld.Load += new System.EventHandler(this.glWorld_Load);
+            this.glWorld.Paint += new System.Windows.Forms.PaintEventHandler(this.glWorld_Paint);
+            this.glWorld.MouseMove += new System.Windows.Forms.MouseEventHandler(this.glWorld_MouseMove);
+            this.glWorld.MouseDown += new System.Windows.Forms.MouseEventHandler(this.glWorld_MouseDown);
+            this.glWorld.MouseUp += new System.Windows.Forms.MouseEventHandler(this.glWorld_MouseUp);
+            this.glWorld.KeyDown += new System.Windows.Forms.KeyEventHandler(this.glWorld_KeyDown);
+            // 
+            // glMiniMap
+            // 
+            this.glMiniMap.AccumBits = ((byte)(0));
+            this.glMiniMap.AutoCheckErrors = false;
+            this.glMiniMap.AutoFinish = false;
+            this.glMiniMap.AutoMakeCurrent = true;
+            this.glMiniMap.AutoSwapBuffers = true;
+            this.glMiniMap.BackColor = System.Drawing.Color.Black;
+            this.glMiniMap.ColorBits = ((byte)(32));
+            this.glMiniMap.DepthBits = ((byte)(16));
+            this.glMiniMap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.glMiniMap.Location = new System.Drawing.Point(0, 0);
+            this.glMiniMap.Name = "glMiniMap";
+            this.glMiniMap.Size = new System.Drawing.Size(236, 190);
+            this.glMiniMap.StencilBits = ((byte)(0));
+            this.glMiniMap.TabIndex = 11;
+            this.glMiniMap.Paint += new System.Windows.Forms.PaintEventHandler(this.glMiniMap_Paint);
+            this.glMiniMap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbMinimap_MouseMove);
+            this.glMiniMap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbMinimap_MouseDown);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(80, 60);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(65, 22);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // WorldBuilder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -721,7 +740,6 @@
             this.splitContainer5.Panel1.PerformLayout();
             this.splitContainer5.Panel2.ResumeLayout(false);
             this.splitContainer5.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbMinimap)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
@@ -744,7 +762,7 @@
         private System.Windows.Forms.ToolStripButton bNewWorld;
         private System.Windows.Forms.TreeView WorldTree;
         private System.Windows.Forms.SplitContainer splitContainer4;
-        private Tao.Platform.Windows.SimpleOpenGlControl glWorld;
+        private Tao.Platform.Windows.SuperOpenGlControl glWorld;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
@@ -782,9 +800,10 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.SplitContainer splitContainer5;
-        private System.Windows.Forms.PictureBox pbMinimap;
         private System.Windows.Forms.Label lMouseScreen;
         private System.Windows.Forms.Label lMouse;
+        private Tao.Platform.Windows.SuperOpenGlControl glMiniMap;
+        private System.Windows.Forms.Button button1;
     }
 }
 

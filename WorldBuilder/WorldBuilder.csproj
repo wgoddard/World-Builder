@@ -103,6 +103,9 @@
     <Compile Include="Entities\Sprite\AnimatedSprite.cs" />
     <Compile Include="Entities\Sprite\Texture.cs" />
     <Compile Include="Resources\Image.cs" />
+    <Compile Include="SuperGlControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="World.cs">
       <SubType>Code</SubType>
     </Compile>

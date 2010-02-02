@@ -20,7 +20,7 @@ namespace WorldBuilder
         private World world = null;
         List<Entity> selectedEntities = new List<Entity>();
         Point screenTranslation = new Point();
-        double screenZoom = 1.0f;
+        double screenZoom = 1.0;
 
         //Interface Settings
         bool gridAlign = false;
@@ -33,6 +33,13 @@ namespace WorldBuilder
             InitializeComponent();
 
             glWorld.InitializeContexts();
+            glMiniMap.InitializeContexts();
+            glWorld.LinkContexts(glMiniMap);
+            //Wgl.wglShareLists(glMiniMap.renderingContext, glWorld.renderingContext);
+            //Wgl.wglShareLists(glWorld.renderingContext, glMiniMap.renderingContext);
+            Gl.glEnable(Gl.GL_TEXTURE_2D);
+            glWorld.MakeCurrent();
+
             Il.ilInit();
             Ilu.iluInit();
             Ilut.ilutInit();
@@ -50,15 +57,38 @@ namespace WorldBuilder
             double x = screenTranslation.X / screenZoom;
             double y = screenTranslation.Y / screenZoom;
 
-            screenZoom += 0.001 * e.Delta;
-            if (screenZoom < 0.1)
+            //double x = screenTranslation.X;
+            //double y = screenTranslation.Y;
+
+            double old = screenZoom;
+
+            screenZoom = screenZoom + (e.Delta > 0 ? 0.05 : -0.05);
+            if (screenZoom < 0.01)
+            {
                 screenZoom = 0.01;
+            }
+            else if (screenZoom > 50)
+            {
+                screenZoom = 50;
+            }
+            else
+            {
+               // x = x - glWorld.Width/2;
+            }
 
-            screenTranslation.X = (int)(x * screenZoom);
-            screenTranslation.Y = (int)(y * screenZoom);
+            //screenTranslation.X = (int)(x * screenZoom);
+            //screenTranslation.Y = (int)(y * screenZoom);
+
+            //This new code adjusts the Zoom so it points to the same center as before
+            screenTranslation.X = (int)((x * screenZoom) +(glWorld.Width / screenZoom - glWorld.Width / old) / 2 * screenZoom);
+            screenTranslation.Y = (int)((y * screenZoom) +(glWorld.Height / screenZoom - glWorld.Height / old) / 2 * screenZoom);
+
+           // screenTranslation.X = (int)(x * screenZoom - (glWorld.Width/screenZoom - glWorld.Width/old)   )/2;
+            //screenTranslation.Y = (int)(y * screenZoom - (glWorld.Height/screenZoom - glWorld.Height/old) )/2;
 
 
 
+            UpdateMiniMap();
             glWorld.Draw();
         }
 
@@ -141,6 +171,22 @@ namespace WorldBuilder
             {
                 foreach (string file in d.FileNames)
                 {
+                    Image i = Resources.Manager.GetImage(file);
+                    ListViewItem item = new ListViewItem(System.IO.Path.GetFileName(file));
+                    if (i != null)
+                    {
+                        MessageBox.Show(file + " was already opened");
+                        continue;
+
+                    }
+                    else
+                    {
+                        i = new Image(file);
+                        Resources.Manager.AddImage(i);
+                    }
+
+                    item.Tag = i;
+
                     try
                     {
                         textureList.Images.Add(new Bitmap(file));
@@ -148,14 +194,13 @@ namespace WorldBuilder
                     catch (Exception)
                     {
                         MessageBox.Show(file + " is invalid/unsupported.");
+                        Resources.Manager.Remove(i);
                         continue;
                     }
-                    ListViewItem item = new ListViewItem(System.IO.Path.GetFileName(file));
+                    
                     item.ImageIndex = listTextures.Items.Count;
                     listTextures.Items.Add(item);
-                    Image i = new Image(file);
-                    Resources.Manager.AddImage(i);
-                    item.Tag = i;
+
                 }
             }
         }
@@ -293,7 +338,8 @@ namespace WorldBuilder
                     mouseStamp.Draw();
                     break;
                 case MouseMode.TileEntity:
-                    Gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+                    Gl.glColor4f(1.0f, 0.5f, 0.5f, 0.5f);
+                    //Gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
                     Point mouseNow = AdjustPoint(mouseCurrent);
                     Point mouseS = AdjustPoint(mouseStart);
                     if (gridAlign == true && world.GetLayer().GridX > 0 && world.GetLayer().GridY > 0)
@@ -939,11 +985,14 @@ namespace WorldBuilder
         void TranslateToMiniMap(Point p)
         {
             if (world == null || world.GetLevel() == null) return;
-            p.Y = pbMinimap.Height - p.Y;
-            screenTranslation.X = (int)(-(float)p.X / (float)pbMinimap.Width * (float)world.GetLevel().Width * screenZoom + (glWorld.Width / 2));
-            screenTranslation.Y = (int)(-(float)p.Y / (float)pbMinimap.Height * (float)world.GetLevel().Height * screenZoom + (glWorld.Height / 2));
+            p.Y = glMiniMap.Height - p.Y;
+            screenTranslation.X = (int)(-(float)p.X / (float)glMiniMap.Width * (float)world.GetLevel().Width * screenZoom + (glWorld.Width / 2));
+            screenTranslation.Y = (int)(-(float)p.Y / (float)glMiniMap.Height * (float)world.GetLevel().Height * screenZoom + (glWorld.Height / 2));
 
-            lMouse.Text = "World (" + ((int)(screenTranslation.X / screenZoom)).ToString() + ", " + ((int)(screenTranslation.Y / screenZoom)).ToString() + ")";
+            //lMouse.Text = "World (" + ((int)((-screenTranslation.X) / screenZoom) - glWorld.Width / screenZoom).ToString() + ", " + ((int)(-screenTranslation.Y / screenZoom)).ToString() + ")";
+            lMouse.Text = "World (" + ((int)((float)p.X / (float)glMiniMap.Width * (float)world.GetLevel().Width)).ToString()
+                        + " , " + ((int)((float)p.Y / (float)glMiniMap.Height * (float)world.GetLevel().Height)).ToString() + ")";
+
 
             UpdateMiniMap();
             glWorld.Draw();
@@ -951,55 +1000,7 @@ namespace WorldBuilder
 
         void UpdateMiniMap()
         {
-            int width = glWorld.Width;
-            int height = glWorld.Height;
-
-            int wWidth = world.GetLevel().Width;
-            int wHeight = world.GetLevel().Height;
-
-            Gl.glMatrixMode(Gl.GL_PROJECTION);
-            Gl.glLoadIdentity();
-            Gl.glOrtho(0, wWidth, 0, wHeight, 0, 1);
-            //Gl.glOrtho(-wWidth / 2, wWidth / 2, -wHeight / 2, wHeight / 2, 0, 1);
-            Gl.glMatrixMode(Gl.GL_MODELVIEW);
-            Gl.glLoadIdentity();
-            //Gl.glTranslated((double)(screenTranslation.X), (double)(screenTranslation.Y), 0);
-            //Gl.glScaled(screenZoom, screenZoom, 0);
-
-            Gl.glViewport(0, 0, pbMinimap.Width, pbMinimap.Height);
-
-            Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
-
-            try
-            {
-                Layer l = world.GetLayer();
-                world.GetLevel().Draw();
-                Gl.glColor3f(1.0f, 1.0f, 1.0f);
-                Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
-                Gl.glBegin(Gl.GL_LINE_LOOP);
-                    Gl.glVertex2d(-screenTranslation.X / screenZoom, -screenTranslation.Y / screenZoom);
-                    Gl.glVertex2d(-screenTranslation.X / screenZoom + glWorld.Width / screenZoom, -screenTranslation.Y / screenZoom);
-                    Gl.glVertex2d(-screenTranslation.X / screenZoom + glWorld.Width / screenZoom, -screenTranslation.Y / screenZoom + glWorld.Height / screenZoom);
-                    Gl.glVertex2d(-screenTranslation.X / screenZoom, -screenTranslation.Y / screenZoom + glWorld.Height / screenZoom);
-                Gl.glEnd();
-            }
-            catch (Exception)
-            { }
-
-
-
-            Gl.glColor3f(1.0f, 1.0f, 1.0f);
-            Gl.glFlush();
-
-            Bitmap b = new Bitmap(pbMinimap.Width, pbMinimap.Height, PixelFormat.Format32bppArgb);
-            BitmapData bd = b.LockBits(new System.Drawing.Rectangle(0, 0, pbMinimap.Width, pbMinimap.Height),
-            ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-            Gl.glReadPixels(0, 0, pbMinimap.Width, pbMinimap.Height, Gl.GL_BGRA_EXT, Gl.GL_UNSIGNED_BYTE, bd.Scan0);
-
-            b.UnlockBits(bd);
-            b.RotateFlip(RotateFlipType.RotateNoneFlipY);
-
-            pbMinimap.Image = b;
+            glMiniMap.Draw();
         }
 
         private void bNewWorld_Click(object sender, EventArgs e)
@@ -1020,8 +1021,65 @@ namespace WorldBuilder
         private void bResetZoom_Click(object sender, EventArgs e)
         {
 
+            double x = screenTranslation.X / screenZoom;
+            double y = screenTranslation.Y / screenZoom;
+
             screenZoom = 1;
+
+            screenTranslation.X = (int)(x * screenZoom);
+            screenTranslation.Y = (int)(y * screenZoom);
+
+
             glWorld.Draw();
+        }
+
+        private void glMiniMap_Paint(object sender, PaintEventArgs e)
+        {
+            if (world == null) return;
+            //int width = glWorld.Width;
+            //int height = glWorld.Height;
+
+            int wWidth = world.GetLevel().Width;
+            int wHeight = world.GetLevel().Height;
+
+            Gl.glMatrixMode(Gl.GL_PROJECTION);
+            Gl.glLoadIdentity();
+            Gl.glOrtho(0, wWidth, 0, wHeight, 0, 1);
+            //Gl.glOrtho(-wWidth / 2, wWidth / 2, -wHeight / 2, wHeight / 2, 0, 1);
+            Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            Gl.glLoadIdentity();
+            //Gl.glTranslated((double)(screenTranslation.X), (double)(screenTranslation.Y), 0);
+            //Gl.glScaled(screenZoom, screenZoom, 0);
+
+            Gl.glViewport(0, 0, glMiniMap.Width, glMiniMap.Height);
+
+            Gl.glClear(Gl.GL_COLOR_BUFFER_BIT);
+
+            try
+            {
+                Layer l = world.GetLayer();
+                world.GetLevel().Draw();
+                Gl.glColor3f(1.0f, 1.0f, 1.0f);
+                Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
+                Gl.glBegin(Gl.GL_LINE_LOOP);
+                Gl.glVertex2d(-screenTranslation.X / screenZoom, -screenTranslation.Y / screenZoom);
+                Gl.glVertex2d(-screenTranslation.X / screenZoom + glWorld.Width / screenZoom, -screenTranslation.Y / screenZoom);
+                Gl.glVertex2d(-screenTranslation.X / screenZoom + glWorld.Width / screenZoom, -screenTranslation.Y / screenZoom + glWorld.Height / screenZoom);
+                Gl.glVertex2d(-screenTranslation.X / screenZoom, -screenTranslation.Y / screenZoom + glWorld.Height / screenZoom);
+                Gl.glEnd();
+            }
+            catch (Exception)
+            { }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            glMiniMap.Draw();
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            MessageBox.Show(screenTranslation.ToString());
         }
 
 

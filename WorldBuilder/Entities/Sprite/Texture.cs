@@ -35,16 +35,16 @@ namespace WorldBuilder
             Gl.glBegin(Gl.GL_QUADS);
 
             Gl.glTexCoord2i(0, 0);
-            Gl.glVertex2i(-(int)(m_image.Width/2), -(int)(m_image.Height/2));
+            Gl.glVertex2f(-(m_image.Width/2), -(m_image.Height/2));
 
             Gl.glTexCoord2i(1, 0);
-            Gl.glVertex2i((int)(m_image.Width/2), -(int)(m_image.Height/2));
+            Gl.glVertex2f((m_image.Width/2), -(m_image.Height/2));
 
             Gl.glTexCoord2i(1, 1);
-            Gl.glVertex2i((int)(m_image.Width/2), (int)(m_image.Height/2));
+            Gl.glVertex2f((m_image.Width/2), (m_image.Height/2));
 
             Gl.glTexCoord2i(0, 1);
-            Gl.glVertex2i(-(int)(m_image.Width/2), (int)(m_image.Height/2));
+            Gl.glVertex2f(-(m_image.Width/2), (m_image.Height/2));
 
             Gl.glEnd();
 
@@ -57,21 +57,25 @@ namespace WorldBuilder
             //Gl.glScalef(ScaleX, ScaleY, 0);
             Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
             Gl.glColor3f(1.0f, 0f, 0f);
-            Gl.glBegin(Gl.GL_LINE_STRIP);
+            Gl.glPushMatrix();
+            Gl.glTranslatef(base.X, base.Y, 0);
+            Gl.glScalef(ScaleX * (FlipHorizontal ? -1 : 1), ScaleY * (FlipVertical ? -1 : 1), 0);
+            Gl.glRotated(base.Rotation, 0, 0, 1);
 
-            Gl.glVertex2i((int)(base.X - (m_image.Width / 2 * ScaleX)), (int)(base.Y - (m_image.Height / 2 * ScaleY)));
+            Gl.glBegin(Gl.GL_LINE_LOOP);
 
-            Gl.glVertex2i((int)(base.X + (m_image.Width / 2 * ScaleX)), (int)(base.Y - (m_image.Height / 2 * ScaleY)));
+            Gl.glVertex2f(-(m_image.Width / 2), -(m_image.Height / 2));
 
-            Gl.glVertex2i((int)(base.X + (m_image.Width / 2 * ScaleX)), (int)(base.Y + (m_image.Height / 2 * ScaleY)));
+            Gl.glVertex2f((m_image.Width / 2), -(m_image.Height / 2));
 
-            Gl.glVertex2i((int)(base.X - (m_image.Width / 2 * ScaleX)), (int)(base.Y + (m_image.Height / 2 * ScaleY)));
+            Gl.glVertex2f((m_image.Width / 2), (m_image.Height / 2));
 
-            Gl.glVertex2i((int)(base.X - (m_image.Width / 2 * ScaleX)), (int)(base.Y - (m_image.Height / 2 * ScaleY)));
+            Gl.glVertex2f(-(m_image.Width / 2), (m_image.Height / 2));
 
             Gl.glEnd();
 
-            //Gl.glPopMatrix();
+            Gl.glPopMatrix();
+
         }
 
         public override bool Collide(System.Drawing.Point point)

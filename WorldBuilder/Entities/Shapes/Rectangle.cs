@@ -20,7 +20,12 @@ namespace WorldBuilder
 
         protected override string GetName()
         {
-            return "Rectangle" + id++.ToString();
+            return GetType() + id++.ToString();
+        }
+        public override string GetType()
+        {
+            return "Rectangle";
+            //throw new NotImplementedException();
         }
 
         public override Entity Clone()

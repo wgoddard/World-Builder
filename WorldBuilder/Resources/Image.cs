@@ -7,16 +7,15 @@ using Tao.OpenGl;
 
 namespace WorldBuilder
 {
-    public class Image
+    public class Image : Resource
     {
         int height;
         int width;
         int textureID;
-        string filename;
 
-        public Image(string file_name)
+        public Image(string file_name) : base(file_name)
         {
-            filename = file_name;
+            
             // Il.ilDeleteImage(images[0]);
 
             try
@@ -42,11 +41,6 @@ namespace WorldBuilder
             Il.ilDeleteImage(textureID);
         }
 
-        public string FileName
-        {
-            get { return filename; }
-        }
-
         public int TextureID
         {
             get { return textureID; }
@@ -59,6 +53,19 @@ namespace WorldBuilder
         public int Height
         {
             get { return height; }
+        }
+
+        public override string Type
+        {
+            get
+            {
+                return "Texture";
+                //throw new NotImplementedException();
+            }
+            set
+            {
+               // throw new NotImplementedException();
+            }
         }
     }
 }

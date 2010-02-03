@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml;
+using System.IO;
 
 namespace WorldBuilder
 {
@@ -35,6 +37,96 @@ namespace WorldBuilder
             m_node.ImageIndex = 26;
             m_node.SelectedImageIndex = 26;
         }
+
+        public void Save(string filename)
+        {
+
+            try
+            {
+                //pick whatever filename with .xml extension
+
+                XmlDocument xmlDoc = new XmlDocument();
+
+                try
+                {
+                    xmlDoc.Load(filename);
+                }
+                catch (System.IO.FileNotFoundException)
+                {
+                    //if file is not found, create a new xml file
+                    XmlTextWriter xmlWriter = new XmlTextWriter(filename, System.Text.Encoding.UTF8);
+                    xmlWriter.Formatting = Formatting.Indented;
+                    xmlWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
+                    xmlWriter.WriteStartElement("world");
+                    xmlWriter.Close();
+                    xmlDoc.Load(filename);
+                }
+                XmlNode root = xmlDoc.DocumentElement;
+
+
+                //XmlAttribute nameAttrib = xmlDoc.CreateAttribute("Name");
+
+                XmlElement levelElement = xmlDoc.CreateElement("level");
+                levelElement.SetAttribute("Name", m_name);
+                levelElement.SetAttribute("Width", m_width.ToString());
+                levelElement.SetAttribute("Height", m_height.ToString());
+                root.AppendChild(levelElement);
+
+
+                foreach (Layer l in m_layers)
+                {
+                    XmlElement layerNode = xmlDoc.CreateElement("layer");
+                    layerNode.SetAttribute("Name", l.Name);
+                    //seqNode.SetAttribute("Frames", seq.FrameCount.ToString());
+                    //seqNode.SetAttribute("Return_Loop_Frame", seq.ReturnLoopFrame.ToString());
+                   // seqNode.SetAttribute("Loops", (seq.Loops ? 1 : 0).ToString());
+                    layerNode.SetAttribute("GridX", l.GridX.ToString());
+                    layerNode.SetAttribute("GridY", l.GridY.ToString());
+
+
+                    foreach (Entity e in l.Entities)
+                    {
+                        XmlElement entityNode = xmlDoc.CreateElement(e.GetType());
+                        entityNode.SetAttribute("Name", e.Name);
+                        entityNode.SetAttribute("X", e.X.ToString());
+                        entityNode.SetAttribute("Y", e.Y.ToString());
+                        entityNode.SetAttribute("Width", e.Width.ToString());
+                        entityNode.SetAttribute("Height", e.Height.ToString());
+                        entityNode.SetAttribute("ScaleX", e.ScaleX.ToString());
+                        entityNode.SetAttribute("ScaleY", e.ScaleY.ToString());
+                        entityNode.SetAttribute("Rotation", e.Rotation.ToString());
+                        entityNode.SetAttribute("FlipX", e.FlipHorizontal.ToString());
+                        entityNode.SetAttribute("FlipY", e.FlipHorizontal.ToString());
+
+                        foreach (Resource r in e.Resources)
+                        {
+                            XmlElement resourceNode = xmlDoc.CreateElement("resource");
+                            resourceNode.SetAttribute("Type", r.Type);
+                            resourceNode.SetAttribute("ID", r.ID.ToString());
+
+                            entityNode.AppendChild(resourceNode);
+                        }
+                        
+
+
+                        layerNode.AppendChild(entityNode);
+                    }
+
+                    levelElement.AppendChild(layerNode);
+                }
+
+
+
+                xmlDoc.Save(filename);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
+
+        }
+
 
         public void Draw()
         {

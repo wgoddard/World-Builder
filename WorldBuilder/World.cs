@@ -5,6 +5,7 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
+using System.IO;
 
 namespace WorldBuilder
 {
@@ -16,6 +17,7 @@ namespace WorldBuilder
         TreeView m_tv;
         string m_name = "";
         ContextMenuStrip m_cms;
+        string m_filename;
 
         public World(TreeView tv, string name)
         {
@@ -32,6 +34,29 @@ namespace WorldBuilder
             m_tv.Nodes[0].Checked = true;
             m_tv.Nodes[0].ImageIndex = 44;
             m_tv.Nodes[0].SelectedImageIndex = 44;
+        }
+
+        public void Save()
+        {
+
+            if (File.Exists(m_filename))
+                File.Delete(m_filename);
+
+            foreach (Level l in m_levels)
+            {
+                l.Save(m_filename);
+            }
+        }
+
+        public void SaveAs(string filename)
+        {
+            if (filename != null)
+            {
+                this.m_filename = filename;
+                Save();
+            }
+            else
+                throw new Exception("Invalid filename");
         }
 
         public void Select(Level level, Layer layer)
@@ -106,6 +131,11 @@ namespace WorldBuilder
                 m_name = value;
                 m_tv.Nodes[0].Text = m_name;
             }
+        }
+
+        public string Filename
+        {
+            get { return m_filename; }
         }
 
     }

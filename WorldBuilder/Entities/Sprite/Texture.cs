@@ -18,8 +18,13 @@ namespace WorldBuilder
 
         protected override string GetName()
         {
-            return "Texture" + id++.ToString();
+            return GetType() + id++.ToString();
 
+        }
+        public override string GetType()
+        {
+            return "Texture";
+            //throw new NotImplementedException();
         }
 
         public override void Draw()
@@ -59,18 +64,18 @@ namespace WorldBuilder
             Gl.glColor3f(1.0f, 0f, 0f);
             Gl.glPushMatrix();
             Gl.glTranslatef(base.X, base.Y, 0);
-            Gl.glScalef(ScaleX * (FlipHorizontal ? -1 : 1), ScaleY * (FlipVertical ? -1 : 1), 0);
+            Gl.glScalef(ScaleX * (FlipHorizontal ? -1f : 1f), ScaleY * (FlipVertical ? -1f : 1f), 0);
             Gl.glRotated(base.Rotation, 0, 0, 1);
 
             Gl.glBegin(Gl.GL_LINE_LOOP);
 
-            Gl.glVertex2f(-(m_image.Width / 2), -(m_image.Height / 2));
+            Gl.glVertex2f(-(m_image.Width / 2f), -(m_image.Height / 2f));
 
-            Gl.glVertex2f((m_image.Width / 2), -(m_image.Height / 2));
+            Gl.glVertex2f((m_image.Width / 2f), -(m_image.Height / 2f));
 
-            Gl.glVertex2f((m_image.Width / 2), (m_image.Height / 2));
+            Gl.glVertex2f((m_image.Width / 2f), (m_image.Height / 2f));
 
-            Gl.glVertex2f(-(m_image.Width / 2), (m_image.Height / 2));
+            Gl.glVertex2f(-(m_image.Width / 2f), (m_image.Height / 2f));
 
             Gl.glEnd();
 
@@ -156,6 +161,18 @@ namespace WorldBuilder
         {
             return 22;
             //throw new NotImplementedException();
+        }
+
+        public override List<Resource> Resources
+        {
+            get
+            {
+                List<Resource> resources = new List<Resource>();
+                resources.Add(m_image);
+                return resources;
+            }
+
+            //get { throw new NotImplementedException(); }
         }
 
     }

@@ -68,6 +68,7 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.splitContainer5 = new System.Windows.Forms.SplitContainer();
+            this.button1 = new System.Windows.Forms.Button();
             this.lMouseScreen = new System.Windows.Forms.Label();
             this.lMouse = new System.Windows.Forms.Label();
             this.lLayer = new System.Windows.Forms.Label();
@@ -82,7 +83,8 @@
             this.openTextures = new System.Windows.Forms.OpenFileDialog();
             this.glWorld = new Tao.Platform.Windows.SuperOpenGlControl();
             this.glMiniMap = new Tao.Platform.Windows.SuperOpenGlControl();
-            this.button1 = new System.Windows.Forms.Button();
+            this.saveWorldDialog = new System.Windows.Forms.SaveFileDialog();
+            this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -123,6 +125,7 @@
             this.newWorldToolStripMenuItem,
             this.openWorldToolStripMenuItem,
             this.saveWorldToolStripMenuItem,
+            this.saveAsToolStripMenuItem,
             this.toolStripSeparator5,
             this.addTexturesToolStripMenuItem,
             this.toolStripSeparator6,
@@ -134,43 +137,45 @@
             // newWorldToolStripMenuItem
             // 
             this.newWorldToolStripMenuItem.Name = "newWorldToolStripMenuItem";
-            this.newWorldToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.newWorldToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.newWorldToolStripMenuItem.Text = "New";
             this.newWorldToolStripMenuItem.Click += new System.EventHandler(this.newWorldToolStripMenuItem_Click);
             // 
             // openWorldToolStripMenuItem
             // 
             this.openWorldToolStripMenuItem.Name = "openWorldToolStripMenuItem";
-            this.openWorldToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.openWorldToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openWorldToolStripMenuItem.Text = "Open";
+            this.openWorldToolStripMenuItem.Click += new System.EventHandler(this.openWorldToolStripMenuItem_Click);
             // 
             // saveWorldToolStripMenuItem
             // 
             this.saveWorldToolStripMenuItem.Name = "saveWorldToolStripMenuItem";
-            this.saveWorldToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.saveWorldToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveWorldToolStripMenuItem.Text = "Save";
+            this.saveWorldToolStripMenuItem.Click += new System.EventHandler(this.saveWorldToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(147, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
             // 
             // addTexturesToolStripMenuItem
             // 
             this.addTexturesToolStripMenuItem.Name = "addTexturesToolStripMenuItem";
-            this.addTexturesToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.addTexturesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.addTexturesToolStripMenuItem.Text = "Open Textures";
             this.addTexturesToolStripMenuItem.Click += new System.EventHandler(this.addTexturesToolStripMenuItem_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(147, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(149, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -545,6 +550,16 @@
             this.splitContainer5.SplitterDistance = 272;
             this.splitContainer5.TabIndex = 4;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(80, 60);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(65, 22);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // lMouseScreen
             // 
             this.lMouseScreen.AutoSize = true;
@@ -693,15 +708,12 @@
             this.glMiniMap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbMinimap_MouseMove);
             this.glMiniMap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbMinimap_MouseDown);
             // 
-            // button1
+            // saveAsToolStripMenuItem
             // 
-            this.button1.Location = new System.Drawing.Point(80, 60);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(65, 22);
-            this.button1.TabIndex = 11;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveAsToolStripMenuItem.Text = "Save As";
+            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // WorldBuilder
             // 
@@ -804,6 +816,8 @@
         private System.Windows.Forms.Label lMouse;
         private Tao.Platform.Windows.SuperOpenGlControl glMiniMap;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
+        private System.Windows.Forms.SaveFileDialog saveWorldDialog;
     }
 }
 

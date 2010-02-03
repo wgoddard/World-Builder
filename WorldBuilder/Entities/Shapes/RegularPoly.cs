@@ -19,7 +19,12 @@ namespace WorldBuilder
 
         protected override string GetName()
         {
-            return "RegularPoly" + id++.ToString();
+            return GetType() + id++.ToString();
+        }
+        public override string GetType()
+        {
+            return "RegularPoly";
+            //throw new NotImplementedException();
         }
 
         public override Entity Clone()

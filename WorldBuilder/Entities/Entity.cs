@@ -11,6 +11,7 @@ namespace WorldBuilder
     {
         //private static int id = 0;
         protected abstract string GetName();
+        public abstract string GetType();
 
         string m_name;
         float m_x;
@@ -168,6 +169,7 @@ namespace WorldBuilder
 
         public abstract int Width { get; set; }
         public abstract int Height { get; set; }
+        public abstract List<Resource> Resources { get; }
 
         #endregion
     }

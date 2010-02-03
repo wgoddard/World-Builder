@@ -171,7 +171,7 @@ namespace WorldBuilder
             {
                 foreach (string file in d.FileNames)
                 {
-                    Image i = Resources.Manager.GetImage(file);
+                    Image i = (Image)Resources.Manager.GetResource(file);
                     ListViewItem item = new ListViewItem(System.IO.Path.GetFileName(file));
                     if (i != null)
                     {
@@ -182,7 +182,7 @@ namespace WorldBuilder
                     else
                     {
                         i = new Image(file);
-                        Resources.Manager.AddImage(i);
+                        Resources.Manager.AddResource(i);
                     }
 
                     item.Tag = i;
@@ -1081,6 +1081,32 @@ namespace WorldBuilder
         {
             MessageBox.Show(screenTranslation.ToString());
         }
+
+        private void saveWorldToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                world.Save();
+            }
+            catch (Exception exception)
+            {
+            }
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult r = saveWorldDialog.ShowDialog();
+            if (r == DialogResult.OK)
+            {
+                world.SaveAs(saveWorldDialog.FileName);
+            }
+        }
+
+        private void openWorldToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
 
 
     }

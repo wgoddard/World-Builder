@@ -18,6 +18,11 @@ namespace WorldBuilder
         {
             return null;
         }
+        public override string GetType()
+        {
+            return "AnimatedSprite";
+            //throw new NotImplementedException();
+        }
 
         public override void Draw() { }
         public override void DrawBox()
@@ -57,6 +62,11 @@ namespace WorldBuilder
             {
                 throw new NotImplementedException();
             }
+        }
+
+        public override List<Resource> Resources
+        {
+            get { throw new NotImplementedException(); }
         }
     }
 }

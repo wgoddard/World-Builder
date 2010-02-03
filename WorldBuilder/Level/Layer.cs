@@ -128,5 +128,10 @@ namespace WorldBuilder
             get { return m_gridY; }
             set { m_gridY = value; }
         }
+
+        public List<Entity> Entities
+        {
+            get { return m_entities; }
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace WorldBuilder
     {
         private static Resources _resources;
 
-        private List<Image> images = new List<Image>();
+        private List<Resource> resources = new List<Resource>();
 
         private Resources()
         {
@@ -24,18 +24,26 @@ namespace WorldBuilder
             }
         }
 
-        public void AddImage(Image image)
+        public void AddResource(Resource r)
         {
-            images.Add(image);
+            resources.Add(r);
         }
 
-        public Image GetImage(string filename)
+        public Resource GetResource(string filename)
         {
-            foreach (Image image in images)
+            foreach (Resource r in resources)
             {
-                if (image.FileName == filename) return image;
+                if (r.FileName == filename) return r;
             }
             return null;
+        }
+
+        public int GetID(Resource r)
+        {
+            int id = resources.IndexOf(r);
+            if (id == -1)
+                throw new Exception("Resource wasn't in manager.");
+            return id;
         }
 
         public void Remove(string filename)
@@ -43,9 +51,9 @@ namespace WorldBuilder
             throw new NotImplementedException();
         }
 
-        public bool Remove(Image i)
+        public bool Remove(Resource r)
         {
-            return images.Remove(i);
+            return resources.Remove(r);
         }
 
 

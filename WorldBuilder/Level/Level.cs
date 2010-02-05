@@ -143,13 +143,24 @@ namespace WorldBuilder
             //throw new NotImplementedException();
         }
 
-        void AddLayer()
+        Layer AddLayer()
         {
             TreeNode node = m_node.Nodes.Add("New Layer");
             //m_node.TreeView.Nodes.Add("Test");
             m_selectedLayer = new Layer(node);
             m_layers.Add(m_selectedLayer);
             m_node.Expand();
+            return m_selectedLayer;
+        }
+
+        public Layer AddLayer(string name, int gridx, int gridy)
+        {
+            TreeNode node = m_node.Nodes.Add(name);
+            //m_node.TreeView.Nodes.Add("Test");
+            m_selectedLayer = new Layer(node, name, gridx, gridy);
+            m_layers.Add(m_selectedLayer);
+            //m_node.Expand();
+            return m_selectedLayer;
         }
 
         public void DeleteNode(TreeNode node)

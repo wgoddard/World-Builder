@@ -35,6 +35,7 @@
             this.newWorldToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openWorldToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveWorldToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.addTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -68,7 +69,6 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
             this.splitContainer5 = new System.Windows.Forms.SplitContainer();
-            this.button1 = new System.Windows.Forms.Button();
             this.lMouseScreen = new System.Windows.Forms.Label();
             this.lMouse = new System.Windows.Forms.Label();
             this.lLayer = new System.Windows.Forms.Label();
@@ -81,10 +81,10 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.contextMenuWorld = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openTextures = new System.Windows.Forms.OpenFileDialog();
+            this.saveWorldDialog = new System.Windows.Forms.SaveFileDialog();
+            this.openWorldDialog = new System.Windows.Forms.OpenFileDialog();
             this.glWorld = new Tao.Platform.Windows.SuperOpenGlControl();
             this.glMiniMap = new Tao.Platform.Windows.SuperOpenGlControl();
-            this.saveWorldDialog = new System.Windows.Forms.SaveFileDialog();
-            this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -154,6 +154,13 @@
             this.saveWorldToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveWorldToolStripMenuItem.Text = "Save";
             this.saveWorldToolStripMenuItem.Click += new System.EventHandler(this.saveWorldToolStripMenuItem_Click);
+            // 
+            // saveAsToolStripMenuItem
+            // 
+            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveAsToolStripMenuItem.Text = "Save As";
+            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
@@ -539,7 +546,6 @@
             // 
             // splitContainer5.Panel1
             // 
-            this.splitContainer5.Panel1.Controls.Add(this.button1);
             this.splitContainer5.Panel1.Controls.Add(this.lMouseScreen);
             this.splitContainer5.Panel1.Controls.Add(this.lMouse);
             // 
@@ -549,16 +555,6 @@
             this.splitContainer5.Size = new System.Drawing.Size(512, 190);
             this.splitContainer5.SplitterDistance = 272;
             this.splitContainer5.TabIndex = 4;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(80, 60);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(65, 22);
-            this.button1.TabIndex = 11;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
             // lMouseScreen
             // 
@@ -708,13 +704,6 @@
             this.glMiniMap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pbMinimap_MouseMove);
             this.glMiniMap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbMinimap_MouseDown);
             // 
-            // saveAsToolStripMenuItem
-            // 
-            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.saveAsToolStripMenuItem.Text = "Save As";
-            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
-            // 
             // WorldBuilder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -815,9 +804,9 @@
         private System.Windows.Forms.Label lMouseScreen;
         private System.Windows.Forms.Label lMouse;
         private Tao.Platform.Windows.SuperOpenGlControl glMiniMap;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
         private System.Windows.Forms.SaveFileDialog saveWorldDialog;
+        private System.Windows.Forms.OpenFileDialog openWorldDialog;
     }
 }
 

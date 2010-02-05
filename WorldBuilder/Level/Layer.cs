@@ -34,6 +34,29 @@ namespace WorldBuilder
             m_node.SelectedImageIndex = 24;
         }
 
+        public Layer(TreeNode node, string name, int gridx, int gridy)
+        {
+            m_entities = new List<Entity>();
+            m_node = node;
+            m_node.Tag = this;
+            m_node.TreeView.SelectedNode = m_node;
+            m_node.Checked = true;
+
+            m_cms = new ContextMenuStrip();
+            m_cms.Items.Add("Delete");
+            m_cms.Items[0].Name = "Delete";
+            m_cms.Items[0].Click += new EventHandler(Delete_Click);
+            m_node.ContextMenuStrip = m_cms;
+            m_node.ImageIndex = 24;
+            m_node.SelectedImageIndex = 24;
+
+            ///////
+            m_name = name;
+            m_gridX = gridx;
+            m_gridY = gridy;
+            m_node.Text = m_name;
+        }
+
         void Delete_Click(object sender, EventArgs e)
         {
             Delete();

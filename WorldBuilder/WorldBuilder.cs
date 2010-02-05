@@ -11,6 +11,7 @@ using Tao.OpenGl;
 using Tao.Platform.Windows;
 using Tao.DevIl;
 using System.Drawing.Imaging;
+using System.Xml;
 
 
 namespace WorldBuilder
@@ -171,38 +172,42 @@ namespace WorldBuilder
             {
                 foreach (string file in d.FileNames)
                 {
-                    Image i = (Image)Resources.Manager.GetResource(file);
-                    ListViewItem item = new ListViewItem(System.IO.Path.GetFileName(file));
-                    if (i != null)
-                    {
-                        MessageBox.Show(file + " was already opened");
-                        continue;
-
-                    }
-                    else
-                    {
-                        i = new Image(file);
-                        Resources.Manager.AddResource(i);
-                    }
-
-                    item.Tag = i;
-
-                    try
-                    {
-                        textureList.Images.Add(new Bitmap(file));
-                    }
-                    catch (Exception)
-                    {
-                        MessageBox.Show(file + " is invalid/unsupported.");
-                        Resources.Manager.Remove(i);
-                        continue;
-                    }
-                    
-                    item.ImageIndex = listTextures.Items.Count;
-                    listTextures.Items.Add(item);
-
+                    LoadTexture(file);
                 }
             }
+        }
+
+        void LoadTexture(string file)
+        {
+            Image i = (Image)Resources.Manager.GetResource(file);
+            ListViewItem item = new ListViewItem(System.IO.Path.GetFileName(file));
+            if (i != null)
+            {
+                MessageBox.Show(file + " was already opened");
+                return;
+
+            }
+            else
+            {
+                i = new Image(file);
+                Resources.Manager.AddResource(i);
+            }
+
+            item.Tag = i;
+
+            try
+            {
+                textureList.Images.Add(new Bitmap(file));
+            }
+            catch (Exception)
+            {
+                MessageBox.Show(file + " is invalid/unsupported.");
+                Resources.Manager.Remove(i);
+                return;
+            }
+
+            item.ImageIndex = listTextures.Items.Count;
+            listTextures.Items.Add(item);
         }
 
         private void listTextures_DoubleClick(object sender, EventArgs e)
@@ -1090,6 +1095,7 @@ namespace WorldBuilder
             }
             catch (Exception exception)
             {
+                MessageBox.Show(exception.ToString());
             }
         }
 
@@ -1098,13 +1104,111 @@ namespace WorldBuilder
             DialogResult r = saveWorldDialog.ShowDialog();
             if (r == DialogResult.OK)
             {
-                world.SaveAs(saveWorldDialog.FileName);
+                world.SetSaveFile(saveWorldDialog.FileName);
+                try
+                {
+                    world.Save();
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.ToString());
+                }
             }
         }
 
         private void openWorldToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            DialogResult r = openWorldDialog.ShowDialog();
+            if (r == DialogResult.OK)
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(openWorldDialog.FileName);
+                XmlElement root = doc.DocumentElement;
 
+                XmlElement resourceElement = (XmlElement)root.GetElementsByTagName("image")[0];
+                //XmlElement resourceElement = (XmlElement)doc.GetElementsByTagName("resource")[0];
+
+
+                while (resourceElement != null)
+                {
+                    LoadTexture(resourceElement.GetAttribute("File"));
+
+                    XmlElement next = (XmlElement)resourceElement.NextSibling;
+                    if (next.Name == resourceElement.Name)
+                        resourceElement = (XmlElement)resourceElement.NextSibling;
+                    else
+                        resourceElement = null;
+                }
+
+                //foreach (XmlNode node in root.GetElementsByTagName("resource"))
+                //{
+                //    LoadTexture(node.Attributes["File"].Value);
+                //}
+
+                World w = new World(WorldTree, "World");
+
+                World old = world;
+
+                world = w;
+
+
+                XmlElement levelElement = (XmlElement)root.GetElementsByTagName("level")[0];
+
+                while (levelElement != null)
+                {
+                    //MessageBox.Show("About to add a level " + levelElement.GetAttribute("Name"));
+                    Level level = w.AddLevel(levelElement.GetAttribute("Name"),0,0);
+
+                    XmlElement layerElement = (XmlElement)levelElement.FirstChild;
+
+                    while (layerElement != null)
+                    {
+                        //MessageBox.Show("About to add a layer");
+                        string name = layerElement.GetAttribute("Name");
+                        int gridx = int.Parse(layerElement.GetAttribute("GridX"));
+                        int gridy = int.Parse(layerElement.GetAttribute("GridY"));
+                        Layer layer = level.AddLayer(name, gridx, gridy);
+
+                        XmlElement entityElement = (XmlElement)layerElement.FirstChild;
+
+                        while (entityElement != null)
+                        {
+
+                            //MessageBox.Show("About to add an entity");
+                            
+                            string type = entityElement.Name;
+
+                            float X = float.Parse(entityElement.GetAttribute("X"));
+                            float Y = float.Parse(entityElement.GetAttribute("Y"));
+
+                            switch (type)
+                            {
+                                case "Texture":
+                                    Texture t = new Texture((Image)Resources.Manager.GetResource(int.Parse(((XmlElement)entityElement.FirstChild).GetAttribute("ID"))));
+                                    t.X = X;
+                                    t.Y = Y;
+                                    layer.AddEntity(t);
+                                    break;
+                                default:
+                                    MessageBox.Show("Invalid entity " + type);
+                                    break;
+                            }
+
+                            entityElement = (XmlElement)entityElement.NextSibling;
+                        }
+
+                        layerElement = (XmlElement)layerElement.NextSibling;
+                    }
+
+
+                    levelElement = (XmlElement)levelElement.NextSibling;
+                }
+
+               
+               
+
+
+            }
         }
 
 

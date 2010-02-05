@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.IO;
+using System.Xml;
 
 namespace WorldBuilder
 {
@@ -42,18 +43,44 @@ namespace WorldBuilder
             if (File.Exists(m_filename))
                 File.Delete(m_filename);
 
+            XmlDocument xmlDoc = new XmlDocument();
+
+            try
+            {
+                xmlDoc.Load(m_filename);
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                //if file is not found, create a new xml file
+                XmlTextWriter xmlWriter = new XmlTextWriter(m_filename, System.Text.Encoding.UTF8);
+                xmlWriter.Formatting = Formatting.Indented;
+                xmlWriter.WriteProcessingInstruction("xml", "version='1.0' encoding='UTF-8'");
+                xmlWriter.WriteStartElement("world");
+                xmlWriter.Close();
+                xmlDoc.Load(m_filename);
+            }
+            XmlNode root = xmlDoc.DocumentElement;
+
+            foreach (Resource r in Resources.Manager.ResourceList)
+            {
+                XmlElement resourceElement = xmlDoc.CreateElement("image");
+                resourceElement.SetAttribute("File", r.FileName);
+                root.AppendChild(resourceElement);
+            }
+            xmlDoc.Save(m_filename);
+                
+
             foreach (Level l in m_levels)
             {
                 l.Save(m_filename);
             }
         }
 
-        public void SaveAs(string filename)
+        public void SetSaveFile(string filename)
         {
             if (filename != null)
             {
                 this.m_filename = filename;
-                Save();
             }
             else
                 throw new Exception("Invalid filename");
@@ -81,7 +108,7 @@ namespace WorldBuilder
 
         void World_Click(object sender, EventArgs e)
         {
-            AddLevel();
+            AddLevel("New Level");
         }
 
         void AddEntity(Entity entity)
@@ -103,14 +130,28 @@ namespace WorldBuilder
         {
         }
 
-        void AddLevel()
+        Level AddLevel(string name)
         {
-            //MessageBox.Show("Weee");
-            TreeNode node = m_tv.Nodes[0].Nodes.Add("New Level");
+            TreeNode node = m_tv.Nodes[0].Nodes.Add(name);
             m_selectedLevel = new Level(node);
             m_levels.Add(m_selectedLevel);
             m_tv.Nodes[0].Expand();
+
+            return m_selectedLevel;
         }
+
+        public Level AddLevel(string name, int width, int height)
+        {
+            TreeNode node = m_tv.Nodes[0].Nodes.Add(name);
+            m_selectedLevel = new Level(node);
+            m_levels.Add(m_selectedLevel);
+            //m_tv.Nodes[0].Expand();
+
+            return m_selectedLevel;
+        }
+
+
+
         void DeleteLevel()
         {
         }

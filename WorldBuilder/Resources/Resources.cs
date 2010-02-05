@@ -38,6 +38,11 @@ namespace WorldBuilder
             return null;
         }
 
+        public Resource GetResource(int ID)
+        {
+            return resources[ID];
+        }
+
         public int GetID(Resource r)
         {
             int id = resources.IndexOf(r);
@@ -54,6 +59,11 @@ namespace WorldBuilder
         public bool Remove(Resource r)
         {
             return resources.Remove(r);
+        }
+
+        public List<Resource> ResourceList
+        {
+            get { return resources; }
         }
 
 
